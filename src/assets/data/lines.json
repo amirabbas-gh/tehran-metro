@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Line 5",
+    "color": "#ff0000",
+    "start_time": "06:10",
+    "end_time": "23:10"
+  },
+  {
+    "id": 2,
+    "name": "Line 2",
+    "color": "#0066CC",
+    "start_time": "06:05",
+    "end_time": "23:20"
+  },
+  {
+    "id": 3,
+    "name": "Line 3",
+    "color": "#EA6632",
+    "start_time": "06:00",
+    "end_time": "23:00"
+  }
+]
