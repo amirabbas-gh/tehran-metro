@@ -418,9 +418,43 @@ input {
   border-bottom: 1px solid #eee;
 }
 
+.mapBoxTopStart {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .mapTitle {
   font-size: 13px;
   font-weight: 700;
+}
+
+.githubStar {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #f7f7f7;
+  color: #24292f;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.githubStar:hover {
+  background: #fff;
+  border-color: #bbb;
+}
+
+.githubStar svg {
+  display: block;
 }
 
 .zoomControls {
@@ -710,6 +744,12 @@ input {
 
   .mapTitle {
     font-size: 12px;
+  }
+
+  .githubStar {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 
   .zoomControls button {
