@@ -24,6 +24,7 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
   const [destinationId, setDestinationId] = useState(0);
   const [focus, setFocus] = useState(false);
   const [way, setWay] = useState([]);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const stationsById = useMemo(() => buildAdjacencyList(lines), [lines]);
 
@@ -39,6 +40,10 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
     return () =>
       document.documentElement.removeEventListener("click", onDocumentClick);
   }, []);
+
+  useEffect(() => {
+    if (way.length > 0) setSheetOpen(true);
+  }, [way.length]);
 
   const fillAutoFill = useCallback(
     (searchedText, selectedId = 0) => {
@@ -151,153 +156,212 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
     });
   }, [way, lines]);
 
-  return (
-    <div className="searchForm">
-      <div className="searchHeader">
-        <strong>مسیریابی</strong>
-        <span>مبدا و مقصد را برای نمایش مسیر انتخاب کنید.</span>
-      </div>
+  const sheetClass = [
+    "searchForm",
+    sheetOpen ? "sheetOpen" : "sheetCollapsed",
+    autofill ? "sheetAutofill" : "",
+    showRoute ? "hasRoute" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-      <div className="searchInputs">
-        <div className="searchInput">
-          <b style={{ borderColor: "green" }} />
-          <input
-            id="o"
-            placeholder="ایستگاه مبدا"
-            value={origin}
+  return (
+    <div className={sheetClass}>
+      <button
+        type="button"
+        className="sheetHandle"
+        aria-expanded={sheetOpen}
+        aria-label={sheetOpen ? "بستن پنل" : "باز کردن پنل"}
+        onClick={() => setSheetOpen((open) => !open)}
+      >
+        <span />
+      </button>
+
+      <div className="sheetChrome">
+        <div className="searchHeader">
+          <div>
+            <strong>مسیریابی</strong>
+            <span>مبدا و مقصد را برای نمایش مسیر انتخاب کنید.</span>
+          </div>
+          <button
+            type="button"
+            className="sheetToggle"
+            aria-expanded={sheetOpen}
+            onClick={() => setSheetOpen((open) => !open)}
+          >
+            {sheetOpen ? "جمع کردن" : showRoute ? "مشاهده مسیر" : "خطوط"}
+          </button>
+        </div>
+
+        <div className="searchInputs">
+          <div className="searchInput">
+            <b style={{ borderColor: "green" }} />
+            <input
+              id="o"
+              placeholder="ایستگاه مبدا"
+              value={origin}
+              autoComplete="off"
+              enterKeyHint="search"
             onChange={({ target }) => {
               setOrigin(target.value);
               setOriginId(0);
+              setFocus("o");
+              setAutofill(true);
+              setSheetOpen(true);
             }}
             onFocus={() => {
               setFocus("o");
               setAutofill(true);
+              setSheetOpen(true);
             }}
-          />
-        </div>
-        <div className="searchInput">
-          <b style={{ borderColor: "red" }} />
-          <input
-            id="d"
-            placeholder="ایستگاه مقصد"
-            value={destination}
+            />
+          </div>
+          <div className="searchInput">
+            <b style={{ borderColor: "red" }} />
+            <input
+              id="d"
+              placeholder="ایستگاه مقصد"
+              value={destination}
+              autoComplete="off"
+              enterKeyHint="search"
             onChange={({ target }) => {
               setDestination(target.value);
               setDestinationId(0);
+              setFocus("d");
+              setAutofill(true);
+              setSheetOpen(true);
             }}
             onFocus={() => {
               setFocus("d");
               setAutofill(true);
+              setSheetOpen(true);
             }}
-          />
+            />
+          </div>
         </div>
       </div>
 
-      <div className={`autofill ${autofill ? "active" : ""}`}>
-        {autofills.map((fill) => (
-          <strong
-            key={fill.id}
-            onClick={() => {
-              if (!focus) return;
-              const label = stationLabel(fill);
-              if (focus === "o") {
-                setOrigin(label);
-                setOriginId(fill.id);
-              } else {
-                setDestination(label);
-                setDestinationId(fill.id);
-              }
-              setAutofill(false);
-            }}
-          >
-            <span>
-              {stationLabel(fill)}
-              <small>{fill.name}</small>
-            </span>
-            <div className="lines">
-              {fill.lines.map((line) => (
-                <b key={line.id} style={{ backgroundColor: line.color }}>
-                  {line.id}
-                </b>
-              ))}
-            </div>
-          </strong>
-        ))}
-      </div>
-
-      <div className="sidebarPanel">
-        {showRoute ? (
-          <div className="inquiry">
-            <div className="panelTitle">
-              <strong>مسیر پیشنهادی</strong>
-              <button type="button" className="clearRoute" onClick={clearRoute}>
-                پاک کردن
-              </button>
-            </div>
-
-            <div className="routeMeta">
-              <span>{way.length} ایستگاه</span>
-            </div>
-
-            <div className="routeList">
-              {routeSteps.map((step) => (
-                <div
-                  key={`${step.station.id}-${step.index}`}
-                  className={[
-                    "routeStep",
-                    step.isStart ? "start" : "",
-                    step.isEnd ? "end" : "",
-                    step.isTransfer ? "transfer" : "",
-                  ]
-                    .filter(Boolean)
-                    .join(" ")}
-                >
-                  <div
-                    className="routeRail"
-                    style={{ "--route-color": step.segmentColor }}
+      <div className="sheetBody">
+        <div className="sheetBodyInner">
+          <div className={`suggestPanel ${autofill ? "isOpen" : ""}`}>
+            <div className="suggestPanelInner">
+              <div className={`autofill ${autofill ? "active" : ""}`}>
+                {autofills.map((fill) => (
+                  <strong
+                    key={fill.id}
+                    onClick={() => {
+                      if (!focus) return;
+                      const label = stationLabel(fill);
+                      if (focus === "o") {
+                        setOrigin(label);
+                        setOriginId(fill.id);
+                      } else {
+                        setDestination(label);
+                        setDestinationId(fill.id);
+                      }
+                      setAutofill(false);
+                    }}
                   >
-                    <i />
-                  </div>
-                  <div className="routeContent">
-                    <strong>{stationLabel(step.station)}</strong>
-                    {step.isStart ? <em>مبدا</em> : null}
-                    {step.isEnd ? <em>مقصد</em> : null}
-                    {step.isTransfer && !step.isStart && !step.isEnd ? (
-                      <em>تعویض خط</em>
-                    ) : null}
-                  </div>
-                </div>
-              ))}
+                    <span>
+                      {stationLabel(fill)}
+                      <small>{fill.name}</small>
+                    </span>
+                    <div className="lines">
+                      {fill.lines.map((line) => (
+                        <b key={line.id} style={{ backgroundColor: line.color }}>
+                          {line.id}
+                        </b>
+                      ))}
+                    </div>
+                  </strong>
+                ))}
+              </div>
             </div>
           </div>
-        ) : (
-          <div className="lineList">
-            <strong className="panelHeading">خطوط مترو</strong>
-            {lines.map((line) => {
-              const start = line.stations[0];
-              const end = line.stations.at(-1);
-              const route =
-                start && end
-                  ? `${stationLabel(start)} ← ${stationLabel(end)}`
-                  : "";
 
-              return (
-                <button
-                  type="button"
-                  key={line.id}
-                  className={focusedLine === line.id ? "active" : ""}
-                  onClick={() => onFocusLine(line.id)}
-                >
-                  <b style={{ backgroundColor: line.color }} />
-                  <span>
-                    <em>{line.title}</em>
-                    {route ? <small>{route}</small> : null}
-                  </span>
-                </button>
-              );
-            })}
+          <div className={`mainPanel ${autofill ? "" : "isOpen"}`}>
+            <div className="mainPanelInner">
+              <div className="sidebarPanel">
+                {showRoute ? (
+                  <div className="inquiry">
+                    <div className="panelTitle">
+                      <strong>مسیر پیشنهادی</strong>
+                      <button
+                        type="button"
+                        className="clearRoute"
+                        onClick={clearRoute}
+                      >
+                        پاک کردن
+                      </button>
+                    </div>
+
+                    <div className="routeMeta">
+                      <span>{way.length} ایستگاه</span>
+                    </div>
+
+                    <div className="routeList">
+                      {routeSteps.map((step) => (
+                        <div
+                          key={`${step.station.id}-${step.index}`}
+                          className={[
+                            "routeStep",
+                            step.isStart ? "start" : "",
+                            step.isEnd ? "end" : "",
+                            step.isTransfer ? "transfer" : "",
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                        >
+                          <div
+                            className="routeRail"
+                            style={{ "--route-color": step.segmentColor }}
+                          >
+                            <i />
+                          </div>
+                          <div className="routeContent">
+                            <strong>{stationLabel(step.station)}</strong>
+                            {step.isStart ? <em>مبدا</em> : null}
+                            {step.isEnd ? <em>مقصد</em> : null}
+                            {step.isTransfer && !step.isStart && !step.isEnd ? (
+                              <em>تعویض خط</em>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="lineList">
+                    <strong className="panelHeading">خطوط مترو</strong>
+                    {lines.map((line) => {
+                      const start = line.stations[0];
+                      const end = line.stations.at(-1);
+                      const route =
+                        start && end
+                          ? `${stationLabel(start)} ← ${stationLabel(end)}`
+                          : "";
+
+                      return (
+                        <button
+                          type="button"
+                          key={line.id}
+                          className={focusedLine === line.id ? "active" : ""}
+                          onClick={() => onFocusLine(line.id)}
+                        >
+                          <b style={{ backgroundColor: line.color }} />
+                          <span>
+                            <em>{line.title}</em>
+                            {route ? <small>{route}</small> : null}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

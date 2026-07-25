@@ -9,15 +9,20 @@ const BASE_SCALE = 1100;
 const MIN_ZOOM = 0.55;
 const MAX_ZOOM = 3;
 const DEFAULT_ZOOM = 2.45;
+const MOBILE_DEFAULT_ZOOM = 1.85;
 const MOBILE_MAX_WIDTH = 899;
 // Rough center of central Tehran (around Imam Khomeini / Enghelab).
 const TEHRAN_CENTER = { longitude: 51.421, latitude: 35.701 };
 // Positive Y shifts the initial view down so the map sits a bit higher.
 const DEFAULT_PAN_OFFSET_Y = 110;
-const MOBILE_PAN_OFFSET_Y = 220;
+const MOBILE_PAN_OFFSET_Y = 160;
 
 function isMobileViewport() {
   return window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`).matches;
+}
+
+function initialZoom() {
+  return isMobileViewport() ? MOBILE_DEFAULT_ZOOM : DEFAULT_ZOOM;
 }
 
 function stationLabel(station) {
@@ -47,7 +52,7 @@ function App() {
   const viewport = useRef(null);
   const mapRef = useRef(null);
   const scalerRef = useRef(null);
-  const zoomRef = useRef(DEFAULT_ZOOM);
+  const zoomRef = useRef(initialZoom());
   const animToken = useRef(0);
   const zoomSyncTimer = useRef(0);
   const mapSize = useRef({ width: 0, height: 0 });
@@ -59,11 +64,12 @@ function App() {
     scrollLeft: 0,
     scrollTop: 0,
   });
-  const [zoom, setZoom] = useState(DEFAULT_ZOOM);
+  const [zoom, setZoom] = useState(() => initialZoom());
   const [dragging, setDragging] = useState(false);
   const [focusedLine, setFocusedLine] = useState(null);
   const [routeStationIds, setRouteStationIds] = useState([]);
   const [lines, setLines] = useState([]);
+  const [selectedStationId, setSelectedStationId] = useState(null);
 
   const bounds = useMemo(
     () => ({
@@ -169,8 +175,8 @@ function App() {
   useEffect(() => {
     const closeStation = ({ target }) => {
       if (drag.current.moved) return;
-      const active = document.querySelector(".circle.active");
-      if (active && !active.contains(target)) active.classList.remove("active");
+      if (target.closest?.(".circle") || target.closest?.(".stationCard")) return;
+      setSelectedStationId(null);
     };
 
     window.addEventListener("click", closeStation);
@@ -363,6 +369,8 @@ function App() {
         .map((station) => [station.id, station])
     ).values()
   );
+  const selectedStation =
+    displayStations.find((station) => station.id === selectedStationId) || null;
 
   return (
     <div className="page">
@@ -475,38 +483,46 @@ function App() {
                     }}
                     className={`station${station.id} circle ${
                       station.intersection ? "intersection" : ""
-                    }`}
-                    onClick={({ currentTarget }) => {
+                    } ${selectedStationId === station.id ? "active" : ""}`}
+                    onClick={() => {
                       if (drag.current.moved) return;
-                      document
-                        .querySelectorAll(".circle.active")
-                        .forEach((circle) => circle.classList.remove("active"));
-                      currentTarget.classList.add("active");
+                      setSelectedStationId((current) =>
+                        current === station.id ? null : station.id
+                      );
                     }}
                   >
                     <span>{stationLabel(station)}</span>
-                    <div className="dataBox">
-                      <div className="title">
-                        <strong>{stationLabel(station)}</strong>
-                        <small>{station.name}</small>
-                      </div>
-                      <div className="lines">
-                        {station.timing_lines.map((line) => (
-                          <div key={line.id}>
-                            <b style={{ backgroundColor: line.data.color }}>
-                              {line.data.title} · {stationLabel(line.start.data)}{" "}
-                              ← {stationLabel(line.end.data)}
-                            </b>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
         </div>
+
+        {selectedStation ? (
+          <aside className="stationCard" aria-live="polite">
+            <div className="title">
+              <strong>{stationLabel(selectedStation)}</strong>
+              <small>{selectedStation.name}</small>
+            </div>
+            <div className="lines">
+              {selectedStation.timing_lines.map((line) => (
+                <b key={line.id} style={{ backgroundColor: line.data.color }}>
+                  {line.data.title} · {stationLabel(line.start.data)} ←{" "}
+                  {stationLabel(line.end.data)}
+                </b>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="stationCardClose"
+              aria-label="بستن"
+              onClick={() => setSelectedStationId(null)}
+            >
+              بستن
+            </button>
+          </aside>
+        ) : null}
       </section>
 
       {graphInfo ? (
