@@ -1,76 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { bfsFindPath, buildAdjacencyList } from "./graph";
 
 function stationLabel(station) {
   return station?.translations?.fa || station?.name || "";
 }
 
-function buildRouteGraph(lines) {
-  const stationsById = new Map();
-
-  lines.forEach((line) => {
-    line.stations.forEach((station) => {
-      if (!stationsById.has(station.id)) {
-        stationsById.set(station.id, {
-          ...station,
-          neighbors: new Set(),
-        });
-      }
-    });
-  });
-
-  lines.forEach((line) => {
-    const ordered = [...line.stations].sort(
-      (a, b) => a.line.serial_number - b.line.serial_number
-    );
-
-    for (let i = 0; i < ordered.length - 1; i++) {
-      const current = stationsById.get(ordered[i].id);
-      const next = stationsById.get(ordered[i + 1].id);
-      current.neighbors.add(next.id);
-      next.neighbors.add(current.id);
-    }
-  });
-
-  return stationsById;
-}
-
-function findShortestPath(stationsById, originId, destinationId) {
-  if (!stationsById.has(originId) || !stationsById.has(destinationId)) {
-    return [];
-  }
-
-  if (originId === destinationId) {
-    return [stationsById.get(originId)];
-  }
-
-  const queue = [originId];
-  const seen = new Set([originId]);
-  const parent = new Map([[originId, null]]);
-
-  while (queue.length) {
-    const currentId = queue.shift();
-    const current = stationsById.get(currentId);
-
-    for (const neighborId of current.neighbors) {
-      if (seen.has(neighborId)) continue;
-      seen.add(neighborId);
-      parent.set(neighborId, currentId);
-
-      if (neighborId === destinationId) {
-        const path = [];
-        let cursor = destinationId;
-        while (cursor !== null) {
-          path.push(stationsById.get(cursor));
-          cursor = parent.get(cursor);
-        }
-        return path.reverse();
-      }
-
-      queue.push(neighborId);
-    }
-  }
-
-  return [];
+function withLineColors(station, lines) {
+  return {
+    ...station,
+    lines: station.lines.map((stationLine) => ({
+      ...stationLine,
+      color: lines.find((item) => item.id === stationLine.id)?.color || "#999",
+    })),
+  };
 }
 
 const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
@@ -83,32 +25,7 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
   const [focus, setFocus] = useState(false);
   const [way, setWay] = useState([]);
 
-  const stationsById = useMemo(() => buildRouteGraph(lines), [lines]);
-
-  const angle2Radian = (angle) => (angle * Math.PI) / 180;
-
-  const calculateDistance = (lon1, lat1, lon2, lat2) => {
-    const radLon1 = angle2Radian(lon1);
-    const radLat1 = angle2Radian(lat1);
-    const radLon2 = angle2Radian(lon2);
-    const radLat2 = angle2Radian(lat2);
-    const a = radLat1 - radLat2;
-    const b = radLon1 - radLon2;
-
-    return (
-      2 *
-      Math.asin(
-        Math.sqrt(
-          Math.sin(a / 2) * Math.sin(a / 2) +
-            Math.cos(radLat1) *
-              Math.cos(radLat2) *
-              Math.sin(b / 2) *
-              Math.sin(b / 2)
-        )
-      ) *
-      6378.137
-    );
-  };
+  const stationsById = useMemo(() => buildAdjacencyList(lines), [lines]);
 
   useEffect(() => {
     const onDocumentClick = () => {
@@ -123,43 +40,68 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
       document.documentElement.removeEventListener("click", onDocumentClick);
   }, []);
 
-  const fillAutoFill = useCallback(
-    (searchedText) => {
-      const matches = new Map();
-      const query = searchedText.trim().toLowerCase();
+  const pairedLineIds = useMemo(() => {
+    const otherId =
+      focus === "d" ? originId : focus === "o" ? destinationId : 0;
+    if (!otherId) return null;
 
-      lines.forEach((line) => {
-        line.stations.forEach((station) => {
-          const persianName = station.translations?.fa || "";
-          if (
-            station.name.toLowerCase().includes(query) ||
-            persianName.includes(searchedText.trim())
-          ) {
-            matches.set(station.id, {
-              ...station,
-              lines: station.lines.map((stationLine) => ({
-                ...stationLine,
-                color:
-                  lines.find((item) => item.id === stationLine.id)?.color ||
-                  "#999",
-              })),
-            });
-          }
-        });
-      });
+    const other = stationsById.get(otherId);
+    return other ? other.lines.map((line) => line.id) : null;
+  }, [focus, originId, destinationId, stationsById]);
+
+  const fillAutoFill = useCallback(
+    (searchedText, selectedId = 0) => {
+      const selected = selectedId ? stationsById.get(selectedId) : null;
+      const raw = searchedText.trim();
+      const query =
+        selected && stationLabel(selected) === raw ? "" : raw.toLowerCase();
+      const persianQuery = query ? raw : "";
+      const matches = new Map();
+
+      const consider = (station) => {
+        if (matches.has(station.id)) return;
+        if (focus === "o" && station.id === destinationId) return;
+        if (focus === "d" && station.id === originId) return;
+
+        const persianName = station.translations?.fa || "";
+        const matchesQuery =
+          !query ||
+          station.name.toLowerCase().includes(query) ||
+          persianName.includes(persianQuery);
+
+        if (matchesQuery) {
+          matches.set(station.id, withLineColors(station, lines));
+        }
+      };
+
+      // After one endpoint is chosen, suggest stations on the same line(s).
+      // Otherwise keep the full station list (same as before).
+      if (pairedLineIds?.length) {
+        lines
+          .filter((line) => pairedLineIds.includes(line.id))
+          .forEach((line) => line.stations.forEach(consider));
+      } else {
+        lines.forEach((line) => line.stations.forEach(consider));
+      }
 
       setAutofills([...matches.values()]);
     },
-    [lines]
+    [lines, pairedLineIds, focus, originId, destinationId, stationsById]
   );
 
   useEffect(() => {
-    fillAutoFill(origin);
-  }, [origin, fillAutoFill]);
-
-  useEffect(() => {
-    fillAutoFill(destination);
-  }, [destination, fillAutoFill]);
+    if (!autofill || !focus) return;
+    if (focus === "o") fillAutoFill(origin, originId);
+    else fillAutoFill(destination, destinationId);
+  }, [
+    origin,
+    destination,
+    originId,
+    destinationId,
+    fillAutoFill,
+    autofill,
+    focus,
+  ]);
 
   const clearRoute = useCallback(() => {
     setOrigin("");
@@ -177,15 +119,10 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
       return;
     }
 
-    const path = findShortestPath(stationsById, originId, destinationId);
+    const path = bfsFindPath(stationsById, originId, destinationId);
     setWay(path);
     onRouteChange?.(path.map((station) => station.id));
   }, [originId, destinationId, stationsById, onRouteChange]);
-
-  const uniqueStations = useMemo(
-    () => [...stationsById.values()],
-    [stationsById]
-  );
 
   const showRoute = way.length > 0;
 
@@ -236,7 +173,7 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
     <div className="searchForm">
       <div className="searchHeader">
         <strong>مسیریابی</strong>
-        <span>مبدا و مقصد را برای نمایش کوتاه‌ترین مسیر انتخاب کنید.</span>
+        <span>مبدا و مقصد را برای نمایش مسیر انتخاب کنید.</span>
       </div>
 
       <div className="searchInputs">
@@ -275,42 +212,6 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
       </div>
 
       <div className={`autofill ${autofill ? "active" : ""}`}>
-        <strong
-          onClick={() => {
-            if (!focus) return;
-            navigator.geolocation.getCurrentPosition(
-              (addr) => {
-                const nearest = [...uniqueStations]
-                  .map((station) => ({
-                    station,
-                    dis: calculateDistance(
-                      station.longtitude,
-                      station.latitude,
-                      addr.coords.longitude,
-                      addr.coords.latitude
-                    ),
-                  }))
-                  .sort((a, b) => a.dis - b.dis)[0];
-
-                if (!nearest) return;
-                const label = stationLabel(nearest.station);
-                if (focus === "o") {
-                  setOrigin(label);
-                  setOriginId(nearest.station.id);
-                } else {
-                  setDestination(label);
-                  setDestinationId(nearest.station.id);
-                }
-                setAutofill(false);
-              },
-              (err) => console.log(err),
-              { enableHighAccuracy: true }
-            );
-          }}
-        >
-          استفاده از موقعیت فعلی
-        </strong>
-
         {autofills.map((fill) => (
           <strong
             key={fill.id}

@@ -432,6 +432,53 @@ input {
   font-size: 12px;
 }
 
+.graphInfo {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 40;
+  width: min(220px, calc(100vw - 40px));
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+.graphInfo > strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.graphInfo dl {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.graphInfo dl > div {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.graphInfo dt {
+  color: #888;
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+}
+
+.graphInfo dd {
+  margin: 0;
+  color: #333;
+  font-size: 12px;
+}
+
 .mapViewport {
   min-height: 0;
   flex: 1;
@@ -443,6 +490,7 @@ input {
   -webkit-overflow-scrolling: touch;
   touch-action: none;
   direction: ltr;
+  scroll-behavior: auto;
 }
 
 .mapViewport.dragging {
@@ -488,7 +536,7 @@ input {
   border-radius: 50%;
   background: #fff;
   cursor: pointer;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1)));
   transform-origin: center;
   transition: opacity 0.2s ease;
 }
@@ -605,5 +653,10 @@ input {
 
   .zoomControls {
     align-self: auto;
+  }
+
+  .graphInfo {
+    right: 12px;
+    bottom: 12px;
   }
 }

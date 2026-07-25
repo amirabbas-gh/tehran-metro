@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./assets/style.css";
 import Stations from "./assets/data/stations.json";
 import Lines from "./assets/data/lines.json";
 import Search from "./Search";
+import { analyzeConnectivity, buildAdjacencyList } from "./graph";
 
 const BASE_SCALE = 1100;
 const MIN_ZOOM = 0.55;
@@ -38,10 +39,18 @@ function clampZoom(value) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
 }
 
+function easeOutCubic(t) {
+  return 1 - Math.pow(1 - t, 3);
+}
+
 function App() {
   const viewport = useRef(null);
+  const mapRef = useRef(null);
+  const scalerRef = useRef(null);
   const zoomRef = useRef(DEFAULT_ZOOM);
-  const animating = useRef(false);
+  const animToken = useRef(0);
+  const zoomSyncTimer = useRef(0);
+  const mapSize = useRef({ width: 0, height: 0 });
   const drag = useRef({
     active: false,
     moved: false,
@@ -65,6 +74,10 @@ function App() {
     }),
     []
   );
+
+  const width = (bounds.maxLongitude - bounds.minLongitude) * BASE_SCALE + 48;
+  const height = (bounds.maxLatitude - bounds.minLatitude) * BASE_SCALE + 48;
+  mapSize.current = { width, height };
 
   useEffect(() => {
     const nextLines = Lines.map((line) => {
@@ -164,11 +177,39 @@ function App() {
     return () => window.removeEventListener("click", closeStation);
   }, []);
 
-  const applyZoomAroundPoint = (nextZoom, clientX, clientY) => {
-    const box = viewport.current;
-    if (!box) {
-      zoomRef.current = nextZoom;
+  // Keep DOM zoom in sync if React re-renders with a stale zoom style.
+  useLayoutEffect(() => {
+    const map = mapRef.current;
+    const scaler = scalerRef.current;
+    if (!map || !scaler) return;
+
+    const z = zoomRef.current;
+    const { width: mapWidth, height: mapHeight } = mapSize.current;
+    map.style.setProperty("--map-zoom", String(z));
+    map.style.transform = `scale(${z})`;
+    scaler.style.width = `${mapWidth * z}px`;
+    scaler.style.height = `${mapHeight * z}px`;
+  });
+
+  const syncZoomState = (nextZoom, immediate = false) => {
+    window.clearTimeout(zoomSyncTimer.current);
+    if (immediate) {
       setZoom(nextZoom);
+      return;
+    }
+    zoomSyncTimer.current = window.setTimeout(() => {
+      setZoom(zoomRef.current);
+    }, 48);
+  };
+
+  const paintZoom = (nextZoom, clientX, clientY) => {
+    const box = viewport.current;
+    const map = mapRef.current;
+    const scaler = scalerRef.current;
+    const { width: mapWidth, height: mapHeight } = mapSize.current;
+
+    if (!box || !map || !scaler) {
+      zoomRef.current = nextZoom;
       return;
     }
 
@@ -179,38 +220,45 @@ function App() {
     const contentY = (box.scrollTop + offsetY) / zoomRef.current;
 
     zoomRef.current = nextZoom;
-    setZoom(nextZoom);
+    map.style.setProperty("--map-zoom", String(nextZoom));
+    map.style.transform = `scale(${nextZoom})`;
+    scaler.style.width = `${mapWidth * nextZoom}px`;
+    scaler.style.height = `${mapHeight * nextZoom}px`;
 
-    requestAnimationFrame(() => {
-      box.scrollLeft = contentX * nextZoom - offsetX;
-      box.scrollTop = contentY * nextZoom - offsetY;
+    const stroke = Math.max(2, 5 / nextZoom);
+    map.querySelectorAll("svg path").forEach((path) => {
+      path.setAttribute("stroke-width", String(stroke));
     });
+
+    box.scrollLeft = contentX * nextZoom - offsetX;
+    box.scrollTop = contentY * nextZoom - offsetY;
   };
 
   const animateToZoom = (target, clientX, clientY) => {
     const goal = clampZoom(target);
     const start = zoomRef.current;
-    if (goal === start) return;
+    if (Math.abs(goal - start) < 0.001) return;
 
     const box = viewport.current;
     const rect = box?.getBoundingClientRect();
     const pointX = clientX ?? (rect ? rect.left + rect.width / 2 : 0);
     const pointY = clientY ?? (rect ? rect.top + rect.height / 2 : 0);
     const startedAt = performance.now();
-    const duration = 180;
-    animating.current = true;
+    const duration = 280;
+    const token = ++animToken.current;
 
     const tick = (now) => {
-      const progress = Math.min(1, (now - startedAt) / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const value = start + (goal - start) * eased;
-      applyZoomAroundPoint(value, pointX, pointY);
+      if (animToken.current !== token) return;
 
-      if (progress < 1 && animating.current) {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const value = start + (goal - start) * easeOutCubic(progress);
+      paintZoom(value, pointX, pointY);
+
+      if (progress < 1) {
         requestAnimationFrame(tick);
       } else {
-        applyZoomAroundPoint(goal, pointX, pointY);
-        animating.current = false;
+        paintZoom(goal, pointX, pointY);
+        syncZoomState(goal, true);
       }
     };
 
@@ -223,14 +271,24 @@ function App() {
 
     const onWheel = (event) => {
       event.preventDefault();
-      const direction = event.deltaY > 0 ? -1 : 1;
-      const next = clampZoom(zoomRef.current + direction * 0.12);
-      if (next === zoomRef.current) return;
-      applyZoomAroundPoint(next, event.clientX, event.clientY);
+      animToken.current += 1;
+
+      const delta =
+        event.deltaMode === 1
+          ? event.deltaY * 16
+          : event.deltaMode === 2
+            ? event.deltaY * box.clientHeight
+            : event.deltaY;
+      const next = clampZoom(zoomRef.current * Math.exp(-delta * 0.00155));
+      if (Math.abs(next - zoomRef.current) < 0.0001) return;
+
+      paintZoom(next, event.clientX, event.clientY);
+      syncZoomState(next);
     };
 
     const onPointerDown = (event) => {
       if (event.button !== 0) return;
+      animToken.current += 1;
       drag.current = {
         active: true,
         moved: false,
@@ -271,6 +329,7 @@ function App() {
     box.addEventListener("pointerleave", endDrag);
 
     return () => {
+      window.clearTimeout(zoomSyncTimer.current);
       box.removeEventListener("wheel", onWheel);
       box.removeEventListener("pointerdown", onPointerDown);
       box.removeEventListener("pointermove", onPointerMove);
@@ -280,10 +339,11 @@ function App() {
     };
   }, [lines.length]);
 
-  const width = (bounds.maxLongitude - bounds.minLongitude) * BASE_SCALE + 48;
-  const height = (bounds.maxLatitude - bounds.minLatitude) * BASE_SCALE + 48;
-
   const routeSet = useMemo(() => new Set(routeStationIds), [routeStationIds]);
+  const graphInfo = useMemo(() => {
+    if (!lines.length) return null;
+    return analyzeConnectivity(buildAdjacencyList(lines));
+  }, [lines]);
   const routeEdges = useMemo(() => {
     const edges = new Set();
     for (let i = 0; i < routeStationIds.length - 1; i++) {
@@ -344,6 +404,7 @@ function App() {
         >
           <div
             className="mapScaler"
+            ref={scalerRef}
             style={{
               width: `${width * zoom}px`,
               height: `${height * zoom}px`,
@@ -351,11 +412,13 @@ function App() {
           >
             <div
               id="map"
+              ref={mapRef}
               className={focusedLine ? "hasFocus" : ""}
               style={{
                 width: `${width}px`,
                 height: `${height}px`,
                 transform: `scale(${zoom})`,
+                "--map-zoom": zoom,
               }}
             >
               <svg>
@@ -409,7 +472,6 @@ function App() {
                         ? "#222"
                         : station.timing_lines[0]?.data.color,
                       opacity: dimmed ? 0.15 : 1,
-                      transform: `translate(-50%, -50%) scale(${1 / zoom})`,
                     }}
                     className={`station${station.id} circle ${
                       station.intersection ? "intersection" : ""
@@ -446,6 +508,42 @@ function App() {
           </div>
         </div>
       </section>
+
+      {graphInfo ? (
+        <aside className="graphInfo" aria-label="Graph theory summary">
+          <strong>G = (V, E)</strong>
+          <dl>
+            <div>
+              <dt>|V|</dt>
+              <dd>{graphInfo.n} stations</dd>
+            </div>
+            <div>
+              <dt>|E|</dt>
+              <dd>{graphInfo.e} edges</dd>
+            </div>
+            <div>
+              <dt>Type</dt>
+              <dd>Undirected · sparse</dd>
+            </div>
+            <div>
+              <dt>Store</dt>
+              <dd>Adjacency list</dd>
+            </div>
+            <div>
+              <dt>Route</dt>
+              <dd>BFS · O(n+e)</dd>
+            </div>
+            <div>
+              <dt>Connected</dt>
+              <dd>
+                {graphInfo.connected
+                  ? "Yes (DFS)"
+                  : `${graphInfo.componentCount} components`}
+              </dd>
+            </div>
+          </dl>
+        </aside>
+      ) : null}
     </div>
   );
 }
