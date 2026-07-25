@@ -3,276 +3,2480 @@
     "id": 1,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 1
+        "id": 4,
+        "serial_number": 3
       }
     ],
-    "name": "Jiaokou",
-    "longtitude": 113.215087,
-    "latitude": 23.119613
+    "name": "Abdol Abad",
+    "translations": {
+      "fa": "عبدل آباد"
+    },
+    "longtitude": 51.36016010714025,
+    "latitude": 35.63813580890704,
+    "disabled": false
   },
   {
     "id": 2,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 2
+        "id": 4,
+        "serial_number": 23
       }
     ],
-    "name": "Zhongshanba",
-    "longtitude": 113.239335,
-    "latitude": 23.13185
+    "name": "Aghdasiyeh",
+    "translations": {
+      "fa": "اقدسیه"
+    },
+    "longtitude": 51.483775336766335,
+    "latitude": 35.80036394698206,
+    "disabled": false
   },
   {
     "id": 3,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 3
-      },
-      {
-        "id": 2,
-        "serial_number": 3
+        "id": 9,
+        "serial_number": 20
       }
     ],
-    "name": "Guangzhou Railway Station",
-    "longtitude": 113.26328,
-    "latitude": 23.154228
+    "name": "Ahang",
+    "translations": {
+      "fa": "آهنگ"
+    },
+    "longtitude": 51.47382899650526,
+    "latitude": 35.66953177750175,
+    "disabled": false
   },
   {
     "id": 4,
     "lines": [
       {
         "id": 1,
-        "serial_number": 4
+        "serial_number": 9
       }
     ],
-    "name": "Taojin",
-    "longtitude": 113.293286,
-    "latitude": 23.142712
+    "name": "Aliabad",
+    "translations": {
+      "fa": "علی‌آباد"
+    },
+    "longtitude": 51.41611118115705,
+    "latitude": 35.629762515281406,
+    "disabled": false
   },
   {
     "id": 5,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 5
+        "id": 5,
+        "serial_number": 2
       }
     ],
-    "name": "Yangji",
-    "longtitude": 113.314869,
-    "latitude": 23.133497
+    "name": "Allameh Jafari",
+    "translations": {
+      "fa": "علامه جعفری"
+    },
+    "longtitude": 51.30725541293873,
+    "latitude": 35.73071888431695,
+    "disabled": false
   },
   {
     "id": 6,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 6
-      },
-      {
-        "id": 3,
-        "serial_number": 8
+        "id": 8,
+        "serial_number": 21
       }
     ],
-    "name": "ZhuJiang New Town",
-    "longtitude": 113.327696,
-    "latitude": 23.125224
+    "name": "Amirkabir",
+    "translations": {
+      "fa": "امیرکبیر"
+    },
+    "longtitude": 51.44702291322249,
+    "latitude": 35.682479930721314,
+    "disabled": false
   },
   {
     "id": 7,
     "lines": [
       {
-        "id": 1,
-        "serial_number": 7
+        "id": 7,
+        "serial_number": 5
       }
     ],
-    "name": "Tancun",
-    "longtitude": 113.352488,
-    "latitude": 23.123143
+    "name": "Atmosphere",
+    "translations": {
+      "fa": "اتمسفر"
+    },
+    "longtitude": 51.046564975722,
+    "latitude": 35.76653088007448,
+    "disabled": false
   },
   {
     "id": 8,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 5
+      }
+    ],
+    "name": "Ayatollah Kashani",
+    "translations": {
+      "fa": "آیت‌الله کاشانی"
+    },
+    "longtitude": 51.30259777850838,
+    "latitude": 35.74100968403951,
+    "disabled": true
+  },
+  {
+    "id": 9,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 19
+      }
+    ],
+    "name": "Ayatollah Taleghani",
+    "translations": {
+      "fa": "آیت‌الله طالقانی"
+    },
+    "longtitude": 51.42549816356315,
+    "latitude": 35.70745447349628,
+    "disabled": false
+  },
+  {
+    "id": 10,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 1
+      }
+    ],
+    "name": "Azadegan",
+    "translations": {
+      "fa": "آزادگان"
+    },
+    "longtitude": 51.335490511644274,
+    "latitude": 35.62732694905995,
+    "disabled": false
+  },
+  {
+    "id": 11,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 17
+      }
+    ],
+    "name": "Bahar Shiraz (Khanevadeh Hospital)",
+    "translations": {
+      "fa": "بهار شیراز (بیمارستان خانواده)"
+    },
+    "longtitude": 51.4325,
+    "latitude": 35.7122,
+    "disabled": false
+  },
+  {
+    "id": 12,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 12
+      }
+    ],
+    "name": "Baharistan",
+    "translations": {
+      "fa": "بهارستان"
+    },
+    "longtitude": 51.432758239912324,
+    "latitude": 35.69191347602845,
+    "disabled": false
+  },
+  {
+    "id": 13,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 21
+      }
+    ],
+    "name": "Basij",
+    "translations": {
+      "fa": "بسیج"
+    },
+    "longtitude": 51.49085866766856,
+    "latitude": 35.6667482543179,
+    "disabled": false
+  },
+  {
+    "id": 14,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 25
+      }
+    ],
+    "name": "Be'sat",
+    "translations": {
+      "fa": "بعثت"
+    },
+    "longtitude": 51.44426629272494,
+    "latitude": 35.64472632973612,
+    "disabled": false
+  },
+  {
+    "id": 15,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 12
+      }
+    ],
+    "name": "Beryanak",
+    "translations": {
+      "fa": "بریانک"
+    },
+    "longtitude": 51.3808000388323,
+    "latitude": 35.673191256951,
+    "disabled": false
+  },
+  {
+    "id": 16,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 5
+      },
+      {
+        "id": 6,
+        "serial_number": 3
+      }
+    ],
+    "name": "Bimeh",
+    "translations": {
+      "fa": "بیمه"
+    },
+    "longtitude": 51.320203078841026,
+    "latitude": 35.69963393508256,
+    "disabled": false
+  },
+  {
+    "id": 17,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 5
+      }
+    ],
+    "name": "Boostan-e Goftegou",
+    "translations": {
+      "fa": "بوستان گفتگو"
+    },
+    "longtitude": 51.382599,
+    "latitude": 35.73256007254948,
+    "disabled": false
+  },
+  {
+    "id": 18,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 13
+      }
+    ],
+    "name": "Bustan-e Laleh",
+    "translations": {
+      "fa": "بوستان لاله"
+    },
+    "longtitude": 51.3908470712869,
+    "latitude": 35.708172999999995,
+    "disabled": false
+  },
+  {
+    "id": 19,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 1
+      }
+    ],
+    "name": "Chaharbagh",
+    "translations": {
+      "fa": "چهارباغ"
+    },
+    "longtitude": 51.30401221869391,
+    "latitude": 35.7506525742434,
+    "disabled": false
+  },
+  {
+    "id": 20,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 19
+      }
+    ],
+    "name": "Chehel Tan-e Doulab",
+    "translations": {
+      "fa": "چهل تن دولاب"
+    },
+    "longtitude": 51.46256923399226,
+    "latitude": 35.66793780192468,
+    "disabled": false
+  },
+  {
+    "id": 21,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 28
+      }
+    ],
+    "name": "Cheshmeh Ali",
+    "translations": {
+      "fa": "چشمه علی"
+    },
+    "longtitude": 51.455,
+    "latitude": 35.6099,
+    "disabled": true
+  },
+  {
+    "id": 22,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 9
+      }
+    ],
+    "name": "Chitgar",
+    "translations": {
+      "fa": "چیتگر"
+    },
+    "longtitude": 51.243843136928454,
+    "latitude": 35.717051515872264,
+    "disabled": false
+  },
+  {
+    "id": 23,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 4
+      }
+    ],
+    "name": "Daneshgah-e Elm-o San'at",
+    "translations": {
+      "fa": "دانشگاه علم و صنعت"
+    },
+    "longtitude": 51.50501472056151,
+    "latitude": 35.734610428888075,
+    "disabled": false
+  },
+  {
+    "id": 24,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 16
+      }
+    ],
+    "name": "Daneshgah-e Imam Ali",
+    "translations": {
+      "fa": "دانشگاه امام علی"
+    },
+    "longtitude": 51.399424318005046,
+    "latitude": 35.687225660229096,
+    "disabled": false
+  },
+  {
+    "id": 25,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 20
+      }
+    ],
+    "name": "Daneshgah-e Sharif",
+    "translations": {
+      "fa": "دانشگاه شریف"
+    },
+    "longtitude": 51.35363318140592,
+    "latitude": 35.7058048453456,
+    "disabled": false
+  },
+  {
+    "id": 26,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 11
+      },
+      {
+        "id": 9,
+        "serial_number": 6
+      }
+    ],
+    "name": "Daneshgah-e Tarbiat Modarres",
+    "translations": {
+      "fa": "دانشگاه تربیت مدرس"
+    },
+    "longtitude": 51.3813022329255,
+    "latitude": 35.72413657282073,
+    "disabled": false
+  },
+  {
+    "id": 27,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 18
+      },
+      {
+        "id": 5,
+        "serial_number": 14
+      }
+    ],
+    "name": "Darvazeh Dolat",
+    "translations": {
+      "fa": "دروازه دولت"
+    },
+    "longtitude": 51.425749525343356,
+    "latitude": 35.70178021056275,
+    "disabled": false
+  },
+  {
+    "id": 28,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 11
+      },
+      {
+        "id": 5,
+        "serial_number": 15
+      }
+    ],
+    "name": "Darvazeh Shemiran",
+    "translations": {
+      "fa": "دروازه شمیران"
+    },
+    "longtitude": 51.43769983388175,
+    "latitude": 35.69908634681844,
+    "disabled": false
+  },
+  {
+    "id": 29,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 8
+      }
+    ],
+    "name": "Doctor Habibollah",
+    "translations": {
+      "fa": "دکتر حبیب‌الله"
+    },
+    "longtitude": 51.356038792281,
+    "latitude": 35.700688779675005,
+    "disabled": false
+  },
+  {
+    "id": 30,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 27
+      }
+    ],
+    "name": "Doctor Shariati",
+    "translations": {
+      "fa": "دکتر شریعتی"
+    },
+    "longtitude": 51.44424182534614,
+    "latitude": 35.76267935499542,
+    "disabled": false
+  },
+  {
+    "id": 31,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 29
+      }
+    ],
+    "name": "Ebn-e Babviyeh",
+    "translations": {
+      "fa": "ابن بابویه"
+    },
+    "longtitude": 51.4463,
+    "latitude": 35.6037,
+    "disabled": true
+  },
+  {
+    "id": 32,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 17
+      }
+    ],
+    "name": "Ebn-e Sina",
+    "translations": {
+      "fa": "ابن سینا"
+    },
+    "longtitude": 51.456541439825315,
+    "latitude": 35.69064287074757,
+    "disabled": false
+  },
+  {
+    "id": 33,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 2
+      }
+    ],
+    "name": "Emam Khomeini Airport",
+    "translations": {
+      "fa": "فرودگاه امام خمینی"
+    },
+    "longtitude": 51.154226667656715,
+    "latitude": 35.406838494162756,
+    "disabled": false
+  },
+  {
+    "id": 34,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 3
+      },
+      {
+        "id": 7,
+        "serial_number": 11
+      }
+    ],
+    "name": "Eram-e Sabz",
+    "translations": {
+      "fa": "ارم سبز"
+    },
+    "longtitude": 51.30178953947772,
+    "latitude": 35.71779722200492,
+    "disabled": false
+  },
+  {
+    "id": 35,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 7
+      }
+    ],
+    "name": "Fadak",
+    "translations": {
+      "fa": "فدک"
+    },
+    "longtitude": 51.475803967952544,
+    "latitude": 35.72654128306413,
+    "disabled": false
+  },
+  {
+    "id": 36,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 1
+      }
+    ],
+    "name": "Farhangsara",
+    "translations": {
+      "fa": "فرهنگسرا"
+    },
+    "longtitude": 51.54689530764591,
+    "latitude": 35.73000736469926,
+    "disabled": false
+  },
+  {
+    "id": 37,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 13
+      }
+    ],
+    "name": "Ferdowsi",
+    "translations": {
+      "fa": "فردوسی"
+    },
+    "longtitude": 51.418506516640896,
+    "latitude": 35.701335063593696,
+    "disabled": false
+  },
+  {
+    "id": 38,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 6
+      }
+    ],
+    "name": "Garmdareh",
+    "translations": {
+      "fa": "گرم‌دره"
+    },
+    "longtitude": 51.081781876919074,
+    "latitude": 35.75103678574071,
+    "disabled": false
+  },
+  {
+    "id": 39,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 30
+      }
+    ],
+    "name": "Gheytariyeh",
+    "translations": {
+      "fa": "قیطریه"
+    },
+    "longtitude": 51.435008131547185,
+    "latitude": 35.79304519418441,
+    "disabled": false
+  },
+  {
+    "id": 40,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 2
+      }
+    ],
+    "name": "Golshahr",
+    "translations": {
+      "fa": "گلشهر"
+    },
+    "longtitude": 50.933065067675706,
+    "latitude": 35.82487887349704,
+    "disabled": false
+  },
+  {
+    "id": 41,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 31
+      }
+    ],
+    "name": "Haram-e Hazrat-e Abdol Azim",
+    "translations": {
+      "fa": "حرم حضرت عبدالعظیم"
+    },
+    "longtitude": 51.4391,
+    "latitude": 35.5916,
+    "disabled": true
+  },
+  {
+    "id": 42,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 15
+      }
+    ],
+    "name": "Hasan Abad",
+    "translations": {
+      "fa": "حسن آباد"
+    },
+    "longtitude": 51.41012096766948,
+    "latitude": 35.686415244197384,
+    "disabled": false
+  },
+  {
+    "id": 43,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 13
+      }
+    ],
+    "name": "Helal Ahmar",
+    "translations": {
+      "fa": "هلال احمر"
+    },
+    "longtitude": 51.38758465752482,
+    "latitude": 35.66800970632861,
+    "disabled": false
+  },
+  {
+    "id": 44,
+    "lines": [
+      {
+        "id": 2,
+        "serial_number": 2
+      }
+    ],
+    "name": "Holy Shrine of Imam Khomeini",
+    "translations": {
+      "fa": "حرم مطهر امام خمینی"
+    },
+    "longtitude": 51.373194344395415,
+    "latitude": 35.54518486863606,
+    "disabled": false
+  },
+  {
+    "id": 45,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 21
+      }
+    ],
+    "name": "Hossein Abad",
+    "translations": {
+      "fa": "حسین‌آباد"
+    },
+    "longtitude": 51.478771138837,
+    "latitude": 35.778856448057304,
+    "disabled": false
+  },
+  {
+    "id": 46,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 10
+      },
+      {
+        "id": 8,
+        "serial_number": 19
+      }
+    ],
+    "name": "Imam Hossein",
+    "translations": {
+      "fa": "امام حسین"
+    },
+    "longtitude": 51.44572070502451,
+    "latitude": 35.702215852360844,
+    "disabled": false
+  },
+  {
+    "id": 47,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 16
+      },
+      {
+        "id": 3,
+        "serial_number": 14
+      }
+    ],
+    "name": "Imam Khomeini",
+    "translations": {
+      "fa": "امام خمینی"
+    },
+    "longtitude": 51.41988539650591,
+    "latitude": 35.68552517258591,
+    "disabled": false
+  },
+  {
+    "id": 48,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 8
+      }
+    ],
+    "name": "Iran Khodro",
+    "translations": {
+      "fa": "ایران‌خودرو"
+    },
+    "longtitude": 51.196807349845535,
+    "latitude": 35.725609187647265,
+    "disabled": false
+  },
+  {
+    "id": 49,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 6
+      }
+    ],
+    "name": "Janbazan",
+    "translations": {
+      "fa": "جانبازان"
+    },
+    "longtitude": 51.48459698476707,
+    "latitude": 35.73342366377895,
+    "disabled": false
+  },
+  {
+    "id": 50,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 6
+      }
+    ],
+    "name": "Javadiyeh",
+    "translations": {
+      "fa": "جوادیه"
+    },
+    "longtitude": 51.388141527579855,
+    "latitude": 35.65911627746628,
+    "disabled": false
+  },
+  {
+    "id": 51,
     "lines": [
       {
         "id": 1,
         "serial_number": 8
       }
     ],
-    "name": "Keyun Lu",
-    "longtitude": 113.383678,
-    "latitude": 23.125143
+    "name": "Javanmard-e Ghassab",
+    "translations": {
+      "fa": "جوانمرد قصاب"
+    },
+    "longtitude": 51.419522067666,
+    "latitude": 35.60993278245109,
+    "disabled": false
   },
   {
-    "id": 9,
+    "id": 52,
     "lines": [
       {
         "id": 2,
         "serial_number": 1
       }
     ],
-    "name": "Jiangnanxi",
-    "longtitude": 113.280339,
-    "latitude": 23.103578
+    "name": "Kahrizak",
+    "translations": {
+      "fa": "کهریزک"
+    },
+    "longtitude": 51.36925401927023,
+    "latitude": 35.521557736592776,
+    "disabled": false
   },
   {
-    "id": 10,
+    "id": 53,
     "lines": [
       {
-        "id": 2,
-        "serial_number": 2
+        "id": 8,
+        "serial_number": 12
       }
     ],
-    "name": "Gongyuanqian",
-    "longtitude": 113.270719,
-    "latitude": 23.131479
+    "name": "Karagar",
+    "translations": {
+      "fa": "کارگر"
+    },
+    "longtitude": 51.38957556915313,
+    "latitude": 35.71493526247226,
+    "disabled": false
   },
   {
-    "id": 11,
+    "id": 54,
     "lines": [
       {
-        "id": 2,
+        "id": 7,
         "serial_number": 4
       }
     ],
-    "name": "Feixiang Park",
-    "longtitude": 113.270061,
-    "latitude": 23.175097
+    "name": "Karaj",
+    "translations": {
+      "fa": "کرج"
+    },
+    "longtitude": 51.00270499651076,
+    "latitude": 35.78700975978792,
+    "disabled": false
   },
   {
-    "id": 12,
+    "id": 55,
     "lines": [
       {
-        "id": 2,
-        "serial_number": 5
+        "id": 4,
+        "serial_number": 18
       }
     ],
-    "name": "Baiyun Culture Square",
-    "longtitude": 113.281913,
-    "latitude": 23.196011
+    "name": "Khajeh Abdollah-e Ansari",
+    "translations": {
+      "fa": "خواجه عبدالله انصاری"
+    },
+    "longtitude": 51.463469815304826,
+    "latitude": 35.743425883530044,
+    "disabled": false
   },
   {
-    "id": 13,
+    "id": 56,
     "lines": [
       {
-        "id": 2,
+        "id": 1,
+        "serial_number": 14
+      }
+    ],
+    "name": "Khayyam",
+    "translations": {
+      "fa": "خیام"
+    },
+    "longtitude": 51.416903425342056,
+    "latitude": 35.673200056951956,
+    "disabled": false
+  },
+  {
+    "id": 57,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 26
+      }
+    ],
+    "name": "Kiyan Shahr",
+    "translations": {
+      "fa": "کیان شهر"
+    },
+    "longtitude": 51.448598964280926,
+    "latitude": 35.632845132735895,
+    "disabled": false
+  },
+  {
+    "id": 58,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 11
+      }
+    ],
+    "name": "Komeyl",
+    "translations": {
+      "fa": "کمیل"
+    },
+    "longtitude": 51.379828288372224,
+    "latitude": 35.6805029770884,
+    "disabled": false
+  },
+  {
+    "id": 59,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 1
+      }
+    ],
+    "name": "Kouhsar",
+    "translations": {
+      "fa": "کوهسار"
+    },
+    "longtitude": 51.27914785190507,
+    "latitude": 35.770810717303846,
+    "disabled": true
+  },
+  {
+    "id": 60,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 8
+      },
+      {
+        "id": 9,
+        "serial_number": 14
+      }
+    ],
+    "name": "Mahdiyeh",
+    "translations": {
+      "fa": "مهدیه"
+    },
+    "longtitude": 51.39929005768028,
+    "latitude": 35.667066187380414,
+    "disabled": false
+  },
+  {
+    "id": 61,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 15
+      }
+    ],
+    "name": "Maryam-e Moghaddas",
+    "translations": {
+      "fa": "مریم مقدس (س)"
+    },
+    "longtitude": 51.414545041430245,
+    "latitude": 35.71543003739339,
+    "disabled": true
+  },
+  {
+    "id": 62,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 9
+      }
+    ],
+    "name": "Marzdaran",
+    "translations": {
+      "fa": "مرزداران"
+    },
+    "longtitude": 51.35946088139418,
+    "latitude": 35.73455522161478,
+    "disabled": false
+  },
+  {
+    "id": 63,
+    "lines": [
+      {
+        "id": 6,
+        "serial_number": 2
+      }
+    ],
+    "name": "Mehrabad Airport Terminal 1&2",
+    "translations": {
+      "fa": "پایانه ۱ و ۲ فرودگاه مهرآباد"
+    },
+    "longtitude": 51.32412755578428,
+    "latitude": 35.69582428567988,
+    "disabled": false
+  },
+  {
+    "id": 64,
+    "lines": [
+      {
+        "id": 6,
+        "serial_number": 1
+      }
+    ],
+    "name": "Mehrabad Airport Terminal 4&6",
+    "translations": {
+      "fa": "پایانه ۴ و ۶ فرودگاه مهرآباد"
+    },
+    "longtitude": 51.3311217144775,
+    "latitude": 35.688655093664195,
+    "disabled": false
+  },
+  {
+    "id": 65,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 13
+      }
+    ],
+    "name": "Mellat",
+    "translations": {
+      "fa": "ملت"
+    },
+    "longtitude": 51.42682095105412,
+    "latitude": 35.688484046889265,
+    "disabled": false
+  },
+  {
+    "id": 66,
+    "lines": [
+      {
+        "id": 5,
         "serial_number": 6
       }
     ],
-    "name": "Jiangxia",
-    "longtitude": 113.289643,
-    "latitude": 23.217573
+    "name": "Meydan-e Azadi",
+    "translations": {
+      "fa": "میدان آزادی"
+    },
+    "longtitude": 51.333326937560194,
+    "latitude": 35.701162131955776,
+    "disabled": false
   },
   {
-    "id": 14,
+    "id": 67,
     "lines": [
       {
-        "id": 2,
-        "serial_number": 7
+        "id": 5,
+        "serial_number": 11
+      }
+    ],
+    "name": "Meydan-e Enghelab-e Eslami",
+    "translations": {
+      "fa": "میدان انقلاب اسلامی"
+    },
+    "longtitude": 51.389983004854955,
+    "latitude": 35.70118753104048,
+    "disabled": false
+  },
+  {
+    "id": 68,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 17
+      }
+    ],
+    "name": "Meydan-e Giyam",
+    "translations": {
+      "fa": "میدان قیام"
+    },
+    "longtitude": 51.4373240157089,
+    "latitude": 35.67000475397928,
+    "disabled": false
+  },
+  {
+    "id": 69,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 11
       },
+      {
+        "id": 8,
+        "serial_number": 14
+      }
+    ],
+    "name": "Meydan-e Hazrat Vali Asr",
+    "translations": {
+      "fa": "میدان حضرت ولیعصر"
+    },
+    "longtitude": 51.40786886120657,
+    "latitude": 35.71202629383182,
+    "disabled": false
+  },
+  {
+    "id": 70,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 30
+      }
+    ],
+    "name": "Meydan-e Hazrat-e Abdol Azim",
+    "translations": {
+      "fa": "میدان حضرت عبدالعظیم"
+    },
+    "longtitude": 51.4406,
+    "latitude": 35.5935,
+    "disabled": true
+  },
+  {
+    "id": 71,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 20
+      }
+    ],
+    "name": "Meydan-e Heravi",
+    "translations": {
+      "fa": "میدان هروی"
+    },
+    "longtitude": 51.47339266788893,
+    "latitude": 35.77186464474175,
+    "disabled": false
+  },
+  {
+    "id": 72,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 17
+      }
+    ],
+    "name": "Meydan-e Horr",
+    "translations": {
+      "fa": "میدان حر"
+    },
+    "longtitude": 51.388446693930064,
+    "latitude": 35.690962448655995,
+    "disabled": false
+  },
+  {
+    "id": 73,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 12
+      }
+    ],
+    "name": "Meydan-e Jahad",
+    "translations": {
+      "fa": "میدان جهاد"
+    },
+    "longtitude": 51.40821158345821,
+    "latitude": 35.72060101981384,
+    "disabled": false
+  },
+  {
+    "id": 74,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 1
+      }
+    ],
+    "name": "Meydan-e Ketab",
+    "translations": {
+      "fa": "میدان کتاب"
+    },
+    "longtitude": 51.35548756724749,
+    "latitude": 35.77730678107591,
+    "disabled": false
+  },
+  {
+    "id": 75,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 23
+      }
+    ],
+    "name": "Meydan-e Khorasan",
+    "translations": {
+      "fa": "میدان خراسان"
+    },
+    "longtitude": 51.445149666909494,
+    "latitude": 35.66413851159522,
+    "disabled": true
+  },
+  {
+    "id": 76,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 13
+      },
+      {
+        "id": 9,
+        "serial_number": 15
+      }
+    ],
+    "name": "Meydan-e Mohammadiyeh",
+    "translations": {
+      "fa": "میدان محمدیه"
+    },
+    "longtitude": 51.4160060658123,
+    "latitude": 35.66823308587964,
+    "disabled": false
+  },
+  {
+    "id": 77,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 3
+      }
+    ],
+    "name": "Meydan-e San'at",
+    "translations": {
+      "fa": "میدان صنعت"
+    },
+    "longtitude": 51.36739593228225,
+    "latitude": 35.7544706937203,
+    "disabled": false
+  },
+  {
+    "id": 78,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 16
+      },
+      {
+        "id": 8,
+        "serial_number": 20
+      }
+    ],
+    "name": "Meydan-e Shohada",
+    "translations": {
+      "fa": "میدان شهدا"
+    },
+    "longtitude": 51.447573991000134,
+    "latitude": 35.69046819891562,
+    "disabled": false
+  },
+  {
+    "id": 79,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 4
+      }
+    ],
+    "name": "Milad Tower",
+    "translations": {
+      "fa": "برج میلاد"
+    },
+    "longtitude": 51.378312966476884,
+    "latitude": 35.74770719166458,
+    "disabled": false
+  },
+  {
+    "id": 80,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 26
+      }
+    ],
+    "name": "Mirdamad",
+    "translations": {
+      "fa": "میرداماد"
+    },
+    "longtitude": 51.433819296509455,
+    "latitude": 35.75982627256205,
+    "disabled": false
+  },
+  {
+    "id": 81,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 13
+      }
+    ],
+    "name": "Mirza-ye Shirazi",
+    "translations": {
+      "fa": "میرزا شیرازی"
+    },
+    "longtitude": 51.41744408700073,
+    "latitude": 35.728102353394476,
+    "disabled": false
+  },
+  {
+    "id": 82,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 7
+      }
+    ],
+    "name": "Modafean-e Salamat",
+    "translations": {
+      "fa": "مدافعان سلامت"
+    },
+    "longtitude": 51.37734433897117,
+    "latitude": 35.706678505970594,
+    "disabled": false
+  },
+  {
+    "id": 83,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 3
+      }
+    ],
+    "name": "Mohammadshahr",
+    "translations": {
+      "fa": "محمدشهر"
+    },
+    "longtitude": 50.96482512274756,
+    "latitude": 35.802094307718946,
+    "disabled": false
+  },
+  {
+    "id": 84,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 9
+      }
+    ],
+    "name": "Moniriyeh",
+    "translations": {
+      "fa": "منیریه"
+    },
+    "longtitude": 51.40158998370889,
+    "latitude": 35.681079689206186,
+    "disabled": false
+  },
+  {
+    "id": 85,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 23
+      }
+    ],
+    "name": "Mosalla-ye Imam Khomeini",
+    "translations": {
+      "fa": "مصلی امام خمینی"
+    },
+    "longtitude": 51.427096058695945,
+    "latitude": 35.74046332086735,
+    "disabled": false
+  },
+  {
+    "id": 86,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 16
+      }
+    ],
+    "name": "Mowlavi",
+    "translations": {
+      "fa": "مولوی"
+    },
+    "longtitude": 51.41601339759233,
+    "latitude": 35.668181587846355,
+    "disabled": false
+  },
+  {
+    "id": 87,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 19
+      }
+    ],
+    "name": "Nabard",
+    "translations": {
+      "fa": "نبرد"
+    },
+    "longtitude": 51.47746281806465,
+    "latitude": 35.69159833444614,
+    "disabled": false
+  },
+  {
+    "id": 88,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 4
+      }
+    ],
+    "name": "Namayeshgah-e Shahr-e Aftab",
+    "translations": {
+      "fa": "نمایشگاه شهر آفتاب"
+    },
+    "longtitude": 51.349153496499326,
+    "latitude": 35.53987425194572,
+    "disabled": false
+  },
+  {
+    "id": 89,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 2
+      }
+    ],
+    "name": "Nemat Abad",
+    "translations": {
+      "fa": "نعمت آباد"
+    },
+    "longtitude": 51.347081546602425,
+    "latitude": 35.63389614355468,
+    "disabled": false
+  },
+  {
+    "id": 90,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 20
+      }
+    ],
+    "name": "Nirou Havaei",
+    "translations": {
+      "fa": "نیروهوایی"
+    },
+    "longtitude": 51.488247662419106,
+    "latitude": 35.69293668867253,
+    "disabled": false
+  },
+  {
+    "id": 91,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 22
+      }
+    ],
+    "name": "Nobonyad",
+    "translations": {
+      "fa": "نوبنیاد"
+    },
+    "longtitude": 51.47868420919925,
+    "latitude": 35.790715615863185,
+    "disabled": false
+  },
+  {
+    "id": 92,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 7
+      }
+    ],
+    "name": "Ostad Mo'in",
+    "translations": {
+      "fa": "استاد معین"
+    },
+    "longtitude": 51.344610347765624,
+    "latitude": 35.700121277637706,
+    "disabled": false
+  },
+  {
+    "id": 93,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 6
+      }
+    ],
+    "name": "Palayeshgah",
+    "translations": {
+      "fa": "پالایشگاه"
+    },
+    "longtitude": 51.3994788965002,
+    "latitude": 35.55974358258574,
+    "disabled": false
+  },
+  {
+    "id": 94,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 15
+      }
+    ],
+    "name": "Panzdah-e Khordad",
+    "translations": {
+      "fa": "پانزده خرداد"
+    },
+    "longtitude": 51.41753379650562,
+    "latitude": 35.67800327258833,
+    "disabled": false
+  },
+  {
+    "id": 95,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 11
+      }
+    ],
+    "name": "Payaneh Jonoub(Jonoub Terminal)",
+    "translations": {
+      "fa": "پایانه جنوبی"
+    },
+    "longtitude": 51.416637846256535,
+    "latitude": 35.65076177259719,
+    "disabled": false
+  },
+  {
+    "id": 96,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 18
+      }
+    ],
+    "name": "Piroozi",
+    "translations": {
+      "fa": "پیروزی"
+    },
+    "longtitude": 51.46791847268905,
+    "latitude": 35.69100756244922,
+    "disabled": false
+  },
+  {
+    "id": 97,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 25
+      }
+    ],
+    "name": "Qa'em",
+    "translations": {
+      "fa": "قائم"
+    },
+    "longtitude": 51.5209879438365,
+    "latitude": 35.7987685128104,
+    "disabled": false
+  },
+  {
+    "id": 98,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 28
+      }
+    ],
+    "name": "Qolhak",
+    "translations": {
+      "fa": "قلهک"
+    },
+    "longtitude": 51.43794821185644,
+    "latitude": 35.772803086807926,
+    "disabled": false
+  },
+  {
+    "id": 99,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 7
+      }
+    ],
+    "name": "Rahahan",
+    "translations": {
+      "fa": "راه آهن"
+    },
+    "longtitude": 51.39834374868766,
+    "latitude": 35.658659693529906,
+    "disabled": false
+  },
+  {
+    "id": 100,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 10
+      }
+    ],
+    "name": "Roudaki",
+    "translations": {
+      "fa": "رودکی"
+    },
+    "longtitude": 51.37908769121558,
+    "latitude": 35.687617922639255,
+    "disabled": false
+  },
+  {
+    "id": 101,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 17
+      }
+    ],
+    "name": "Sa'adi",
+    "translations": {
+      "fa": "سعدی"
+    },
+    "longtitude": 51.42453935232323,
+    "latitude": 35.69333496668028,
+    "disabled": false
+  },
+  {
+    "id": 102,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 8
+      }
+    ],
+    "name": "Sabalan",
+    "translations": {
+      "fa": "سبلان"
+    },
+    "longtitude": 51.46465670720315,
+    "latitude": 35.718205558895995,
+    "disabled": false
+  },
+  {
+    "id": 103,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 18
+      }
+    ],
+    "name": "Sarbaz",
+    "translations": {
+      "fa": "سرباز"
+    },
+    "longtitude": 51.44282476747766,
+    "latitude": 35.708965257212725,
+    "disabled": true
+  },
+  {
+    "id": 104,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 5
+      }
+    ],
+    "name": "Sarsabz",
+    "translations": {
+      "fa": "سرسبز"
+    },
+    "longtitude": 51.49491362733336,
+    "latitude": 35.73531978593998,
+    "disabled": false
+  },
+  {
+    "id": 105,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 19
+      },
+      {
+        "id": 5,
+        "serial_number": 9
+      }
+    ],
+    "name": "Shademan",
+    "translations": {
+      "fa": "شادمان"
+    },
+    "longtitude": 51.36350496310954,
+    "latitude": 35.70066539490897,
+    "disabled": false
+  },
+  {
+    "id": 106,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 5
+      },
+      {
+        "id": 2,
+        "serial_number": 3
+      }
+    ],
+    "name": "Shahed - BagherShahr",
+    "translations": {
+      "fa": "شاهد - باقرشهر"
+    },
+    "longtitude": 51.38257987565447,
+    "latitude": 35.54699212568495,
+    "disabled": false
+  },
+  {
+    "id": 107,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 7
+      }
+    ],
+    "name": "Shahid Ashrafi Esfahani",
+    "translations": {
+      "fa": "شهید اشرفی اصفهانی"
+    },
+    "longtitude": 51.33175593750171,
+    "latitude": 35.73600106730899,
+    "disabled": false
+  },
+  {
+    "id": 108,
+    "lines": [
       {
         "id": 3,
         "serial_number": 3
       }
     ],
-    "name": "Jiahewanggang",
-    "longtitude": 113.295567,
-    "latitude": 23.243642
+    "name": "Shahid Bagheri",
+    "translations": {
+      "fa": "شهید باقری"
+    },
+    "longtitude": 51.516413791466555,
+    "latitude": 35.73310824018062,
+    "disabled": false
   },
   {
-    "id": 15,
+    "id": 109,
     "lines": [
       {
-        "id": 3,
-        "serial_number": 1
+        "id": 1,
+        "serial_number": 22
+      },
+      {
+        "id": 4,
+        "serial_number": 14
       }
     ],
-    "name": "Airport N.",
-    "longtitude": 113.311835,
-    "latitude": 23.402085
+    "name": "Shahid Beheshti",
+    "translations": {
+      "fa": "شهید بهشتی"
+    },
+    "longtitude": 51.42707272534462,
+    "latitude": 35.730966425953845,
+    "disabled": false
   },
   {
-    "id": 16,
+    "id": 110,
     "lines": [
       {
-        "id": 3,
+        "id": 1,
+        "serial_number": 10
+      }
+    ],
+    "name": "Shahid Bokharaei",
+    "translations": {
+      "fa": "شهید بخارایی"
+    },
+    "longtitude": 51.414943338696624,
+    "latitude": 35.640656695868415,
+    "disabled": false
+  },
+  {
+    "id": 111,
+    "lines": [
+      {
+        "id": 9,
         "serial_number": 2
       }
     ],
-    "name": "Renhe",
-    "longtitude": 113.302458,
-    "latitude": 23.341556
+    "name": "Shahid Dadman",
+    "translations": {
+      "fa": "شهید دادمان"
+    },
+    "longtitude": 51.36612886767306,
+    "latitude": 35.767048177938676,
+    "disabled": false
   },
   {
-    "id": 17,
+    "id": 112,
     "lines": [
       {
-        "id": 3,
-        "serial_number": 4
+        "id": 4,
+        "serial_number": 16
       }
     ],
-    "name": "Yongtai",
-    "longtitude": 113.31289,
-    "latitude": 23.226309
+    "name": "Shahid Ghodousi",
+    "translations": {
+      "fa": "شهید قدوسی"
+    },
+    "longtitude": 51.44437452890492,
+    "latitude": 35.73144645262075,
+    "disabled": false
   },
   {
-    "id": 18,
+    "id": 113,
     "lines": [
       {
-        "id": 3,
-        "serial_number": 5
+        "id": 1,
+        "serial_number": 25
       }
     ],
-    "name": "Jingxi Nanfang Hospital",
-    "longtitude": 113.332571,
-    "latitude": 23.190986
+    "name": "Shahid Haghani",
+    "translations": {
+      "fa": "شهید حقانی"
+    },
+    "longtitude": 51.42661575418256,
+    "latitude": 35.75627557912093,
+    "disabled": false
   },
   {
-    "id": 19,
+    "id": 114,
     "lines": [
       {
-        "id": 3,
-        "serial_number": 6
+        "id": 1,
+        "serial_number": 24
       }
     ],
-    "name": "Yantang",
-    "longtitude": 113.333697,
-    "latitude": 23.165843
+    "name": "Shahid Hemmat",
+    "translations": {
+      "fa": "شهید همت"
+    },
+    "longtitude": 51.425991738835656,
+    "latitude": 35.748052365109096,
+    "disabled": false
   },
   {
-    "id": 20,
+    "id": 115,
     "lines": [
       {
-        "id": 3,
-        "serial_number": 7
+        "id": 5,
+        "serial_number": 21
       }
     ],
-    "name": "Linhexi",
-    "longtitude": 113.330364,
-    "latitude": 23.147156
+    "name": "Shahid Kolahdooz",
+    "translations": {
+      "fa": "شهید کلاهدوز"
+    },
+    "longtitude": 51.49985618004835,
+    "latitude": 35.698258629647235,
+    "disabled": false
   },
   {
-    "id": 21,
+    "id": 116,
     "lines": [
       {
         "id": 3,
         "serial_number": 9
       }
     ],
-    "name": "Kecun",
-    "longtitude": 113.327116,
-    "latitude": 23.102117
+    "name": "Shahid Madani",
+    "translations": {
+      "fa": "شهید مدنی"
+    },
+    "longtitude": 51.453372800456044,
+    "latitude": 35.70920813139492,
+    "disabled": false
   },
   {
-    "id": 22,
+    "id": 117,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 24
+      }
+    ],
+    "name": "Shahid Mahallati",
+    "translations": {
+      "fa": "شهید محلاتی"
+    },
+    "longtitude": 51.5081728391952,
+    "latitude": 35.79790926564732,
+    "disabled": false
+  },
+  {
+    "id": 118,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 21
+      }
+    ],
+    "name": "Shahid Mofattah",
+    "translations": {
+      "fa": "شهید مفتح"
+    },
+    "longtitude": 51.42783745418104,
+    "latitude": 35.7245795929327,
+    "disabled": false
+  },
+  {
+    "id": 119,
     "lines": [
       {
         "id": 3,
+        "serial_number": 18
+      },
+      {
+        "id": 9,
+        "serial_number": 9
+      }
+    ],
+    "name": "Shahid Navab-e Safavi",
+    "translations": {
+      "fa": "شهید نواب صفوی"
+    },
+    "longtitude": 51.37923331665502,
+    "latitude": 35.69446218774433,
+    "disabled": false
+  },
+  {
+    "id": 120,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 24
+      }
+    ],
+    "name": "Shahid Rezaei",
+    "translations": {
+      "fa": "شهید رضایی"
+    },
+    "longtitude": 51.44471695119032,
+    "latitude": 35.65237572978883,
+    "disabled": false
+  },
+  {
+    "id": 121,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 29
+      }
+    ],
+    "name": "Shahid Sadr",
+    "translations": {
+      "fa": "شهید صدر"
+    },
+    "longtitude": 51.435841867673915,
+    "latitude": 35.78517256576695,
+    "disabled": false
+  },
+  {
+    "id": 122,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 6
+      }
+    ],
+    "name": "Shahid Sattari",
+    "translations": {
+      "fa": "شهید ستاری"
+    },
+    "longtitude": 51.319948407717405,
+    "latitude": 35.736882178757604,
+    "disabled": false
+  },
+  {
+    "id": 123,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 17
+      }
+    ],
+    "name": "Shahid Sayyad Shirazi",
+    "translations": {
+      "fa": "شهید صیاد شیرازی"
+    },
+    "longtitude": 51.458426696508255,
+    "latitude": 35.73536131951541,
+    "disabled": false
+  },
+  {
+    "id": 124,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 1
+      }
+    ],
+    "name": "Shahid Sepahbod Qasem Soleimani",
+    "translations": {
+      "fa": "شهید سپهبد قاسم سلیمانی"
+    },
+    "longtitude": 50.719114690587546,
+    "latitude": 35.95900066056138,
+    "disabled": true
+  },
+  {
+    "id": 125,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 19
+      }
+    ],
+    "name": "Shahid Zeynoddin",
+    "translations": {
+      "fa": "شهید زین‌الدین"
+    },
+    "longtitude": 51.46548920364399,
+    "latitude": 35.760523492375995,
+    "disabled": false
+  },
+  {
+    "id": 126,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 1
+      }
+    ],
+    "name": "Shahr-e Parand",
+    "translations": {
+      "fa": "شهر پرند"
+    },
+    "longtitude": 50.976677065935476,
+    "latitude": 35.46441271365459,
+    "disabled": true
+  },
+  {
+    "id": 127,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 7
+      }
+    ],
+    "name": "Shahr-e Rey",
+    "translations": {
+      "fa": "شهر ری"
+    },
+    "longtitude": 51.42233516766524,
+    "latitude": 35.59472807905189,
+    "disabled": false
+  },
+  {
+    "id": 128,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 4
+      }
+    ],
+    "name": "Shahr-e Ziba",
+    "translations": {
+      "fa": "شهر زیبا"
+    },
+    "longtitude": 51.29469436724632,
+    "latitude": 35.745683564857195,
+    "disabled": true
+  },
+  {
+    "id": 129,
+    "lines": [
+      {
+        "id": 8,
         "serial_number": 10
       }
     ],
-    "name": "Lijiao",
-    "longtitude": 113.325596,
-    "latitude": 23.060694
+    "name": "Shahrak-e Azmayesh",
+    "translations": {
+      "fa": "شهرک آزمایش"
+    },
+    "longtitude": 51.37133820553804,
+    "latitude": 35.73162345726911,
+    "disabled": false
+  },
+  {
+    "id": 130,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 4
+      }
+    ],
+    "name": "Shahrak-e Ekbatan",
+    "translations": {
+      "fa": "شهرک اکباتان"
+    },
+    "longtitude": 51.3076514993387,
+    "latitude": 35.70542641649221,
+    "disabled": false
+  },
+  {
+    "id": 131,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 4
+      }
+    ],
+    "name": "Shahrak-e Shariaty",
+    "translations": {
+      "fa": "شهرک شریعتی"
+    },
+    "longtitude": 51.36927744889414,
+    "latitude": 35.64433913304947,
+    "disabled": false
+  },
+  {
+    "id": 132,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 3
+      }
+    ],
+    "name": "Shahran",
+    "translations": {
+      "fa": "شهران"
+    },
+    "longtitude": 51.288140667283,
+    "latitude": 35.75395279299403,
+    "disabled": true
+  },
+  {
+    "id": 133,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 27
+      }
+    ],
+    "name": "Shohada-ye Dowlat Abad",
+    "translations": {
+      "fa": "شهدای دولت‌آباد"
+    },
+    "longtitude": 51.46461183910625,
+    "latitude": 35.618896274330154,
+    "disabled": false
+  },
+  {
+    "id": 134,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 20
+      },
+      {
+        "id": 8,
+        "serial_number": 16
+      }
+    ],
+    "name": "Shohada-ye Haftom-e Tir",
+    "translations": {
+      "fa": "شهدای هفتم تیر"
+    },
+    "longtitude": 51.42627241803309,
+    "latitude": 35.71532411227465,
+    "disabled": false
+  },
+  {
+    "id": 135,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 22
+      },
+      {
+        "id": 9,
+        "serial_number": 18
+      }
+    ],
+    "name": "Shohada-ye Hefdah-e Shahrivar",
+    "translations": {
+      "fa": "شهدای هفده شهریور"
+    },
+    "longtitude": 51.44541700354487,
+    "latitude": 35.668382544515524,
+    "disabled": true
+  },
+  {
+    "id": 136,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 2
+      }
+    ],
+    "name": "Shohada-ye Kan",
+    "translations": {
+      "fa": "شهدای کن"
+    },
+    "longtitude": 51.28346118280588,
+    "latitude": 35.76350331872328,
+    "disabled": true
+  },
+  {
+    "id": 137,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 12
+      }
+    ],
+    "name": "Shoush",
+    "translations": {
+      "fa": "شوش"
+    },
+    "longtitude": 51.41413394685172,
+    "latitude": 35.657419184572184,
+    "disabled": false
+  },
+  {
+    "id": 138,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 15
+      }
+    ],
+    "name": "Sohrevardi",
+    "translations": {
+      "fa": "سهروردی"
+    },
+    "longtitude": 51.436983861080726,
+    "latitude": 35.73106228632752,
+    "disabled": false
+  },
+  {
+    "id": 139,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 31
+      }
+    ],
+    "name": "Tajrish",
+    "translations": {
+      "fa": "تجریش"
+    },
+    "longtitude": 51.43348783883829,
+    "latitude": 35.80464927254761,
+    "disabled": false
+  },
+  {
+    "id": 140,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 21
+      }
+    ],
+    "name": "Tarasht",
+    "translations": {
+      "fa": "طرشت"
+    },
+    "longtitude": 51.34343870910494,
+    "latitude": 35.716167999536054,
+    "disabled": false
+  },
+  {
+    "id": 141,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 10
+      },
+      {
+        "id": 5,
+        "serial_number": 12
+      }
+    ],
+    "name": "Teatr-e Shahr",
+    "translations": {
+      "fa": "تئاتر شهر"
+    },
+    "longtitude": 51.40534185101572,
+    "latitude": 35.70115619978607,
+    "disabled": false
+  },
+  {
+    "id": 142,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 22
+      },
+      {
+        "id": 7,
+        "serial_number": 12
+      }
+    ],
+    "name": "Tehran (Sadeghiyeh)",
+    "translations": {
+      "fa": "تهران (صادقیه)"
+    },
+    "longtitude": 51.33096191268742,
+    "latitude": 35.717576979751065,
+    "disabled": false
+  },
+  {
+    "id": 143,
+    "lines": [
+      {
+        "id": 3,
+        "serial_number": 2
+      }
+    ],
+    "name": "Tehranpars",
+    "translations": {
+      "fa": "تهرانپارس"
+    },
+    "longtitude": 51.53174534920288,
+    "latitude": 35.731032252220864,
+    "disabled": false
+  },
+  {
+    "id": 144,
+    "lines": [
+      {
+        "id": 5,
+        "serial_number": 10
+      },
+      {
+        "id": 9,
+        "serial_number": 8
+      }
+    ],
+    "name": "Towhid",
+    "translations": {
+      "fa": "توحید"
+    },
+    "longtitude": 51.378564150294714,
+    "latitude": 35.70085257588454,
+    "disabled": false
+  },
+  {
+    "id": 145,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 7
+      }
+    ],
+    "name": "Vardavard",
+    "translations": {
+      "fa": "وردآورد"
+    },
+    "longtitude": 51.15103133982739,
+    "latitude": 35.74435836939475,
+    "disabled": false
+  },
+  {
+    "id": 146,
+    "lines": [
+      {
+        "id": 7,
+        "serial_number": 10
+      }
+    ],
+    "name": "Varzeshgah-e Azadi",
+    "translations": {
+      "fa": "ورزشگاه آزادی"
+    },
+    "longtitude": 51.28403182648372,
+    "latitude": 35.717234943300866,
+    "disabled": false
+  },
+  {
+    "id": 147,
+    "lines": [
+      {
+        "id": 9,
+        "serial_number": 22
+      }
+    ],
+    "name": "Varzeshgah-e Takhti",
+    "translations": {
+      "fa": "ورزشگاه تختی"
+    },
+    "longtitude": 51.508351640093636,
+    "latitude": 35.67082903161425,
+    "disabled": true
+  },
+  {
+    "id": 148,
+    "lines": [
+      {
+        "id": 1,
+        "serial_number": 3
+      }
+    ],
+    "name": "Vavan",
+    "translations": {
+      "fa": "واوان"
+    },
+    "longtitude": 51.30011,
+    "latitude": 35.514507,
+    "disabled": true
+  },
+  {
+    "id": 149,
+    "lines": [
+      {
+        "id": 8,
+        "serial_number": 8
+      }
+    ],
+    "name": "Yadegar-e Imam",
+    "translations": {
+      "fa": "یادگار امام"
+    },
+    "longtitude": 51.34616137121202,
+    "latitude": 35.7349857300152,
+    "disabled": false
+  },
+  {
+    "id": 150,
+    "lines": [
+      {
+        "id": 4,
+        "serial_number": 5
+      }
+    ],
+    "name": "Zamzam",
+    "translations": {
+      "fa": "زمزم"
+    },
+    "longtitude": 51.37329904910739,
+    "latitude": 35.65258765923896,
+    "disabled": false
   }
 ]

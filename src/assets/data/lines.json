@@ -1,23 +1,65 @@
 [
   {
     "id": 1,
-    "name": "Line 5",
-    "color": "#ff0000",
-    "start_time": "06:10",
-    "end_time": "23:10"
+    "name": "Line 1",
+    "color": "#E0001F",
+    "start_time": "05:30",
+    "end_time": "23:00"
   },
   {
     "id": 2,
-    "name": "Line 2",
-    "color": "#0066CC",
-    "start_time": "06:05",
-    "end_time": "23:20"
+    "name": "Line 1 Branch (Kahrizak – Shahed - BagherShahr)",
+    "color": "#E0001F",
+    "start_time": "05:30",
+    "end_time": "23:00"
   },
   {
     "id": 3,
+    "name": "Line 2",
+    "color": "#2F4389",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 4,
     "name": "Line 3",
-    "color": "#EA6632",
-    "start_time": "06:00",
+    "color": "#67C5F5",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 5,
+    "name": "Line 4",
+    "color": "#F8E100",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 6,
+    "name": "Line 4 Branch (Mehrabad Airport Terminal 4&6 – Bimeh)",
+    "color": "#F8E100",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 7,
+    "name": "Line 5",
+    "color": "#007E46",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 8,
+    "name": "Line 6",
+    "color": "#EF639F",
+    "start_time": "05:30",
+    "end_time": "23:00"
+  },
+  {
+    "id": 9,
+    "name": "Line 7",
+    "color": "#7F0B74",
+    "start_time": "05:30",
     "end_time": "23:00"
   }
 ]

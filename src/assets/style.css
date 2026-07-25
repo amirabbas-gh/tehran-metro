@@ -1,361 +1,609 @@
-#map {
-    position: relative;
-    float: left;
+* {
+  box-sizing: border-box;
 }
 
-svg {
-    float: left;
-    width: 100%;
-    height: 100%;
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 body {
-    padding-top: 150px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  color: #222;
+  font-family: "Vazirmatn", Tahoma, sans-serif;
 }
 
-.indicator {
-    position: absolute;
-    right: 15px;
-    top: 15px;
-    border: 1px solid #4c4c4c;
-    background-color: #ffffff8c;
-    border-radius: 10px;
-    padding: 5px 10px;
-    display: flex;
+button,
+input {
+  font: inherit;
 }
 
-.indicator strong {
-    display: flex;
-    padding: 5px;
-    align-items: center;
-    font-size: 10px;
-    counter-reset: #5f5f5f;
-    cursor: pointer;
-    font-weight: normal;
-}
-
-.indicator strong b {
-    width: 8px;
-    height: 8px;
-    margin-right: 5px;
-}
-
-#map.focus3 path#path3 {
-    opacity: 1;
-}
-
-#map.focus3 :is(#path2, #path1) {
-    opacity: 0.2;
-}
-
-#map.focus1 path#path1 {
-    opacity: 1;
-}
-
-#map.focus1 :is(#path3, #path2) {
-    opacity: 0.2;
-}
-
-#map.focus2 path#path2 {
-    opacity: 1;
-}
-
-#map.focus2 :is(#path3, #path1) {
-    opacity: 0.2;
-}
-
-.circle {
-    width: 17px;
-    height: 17px;
-    transform: translate(-50%, -50%);
-    border: 2px solid;
-    position: absolute;
-    border-radius: 50%;
-    padding: 2px;
-    display: flex;
-    cursor: pointer;
-    z-index: 11;
-}
-
-.circle > span {
-    font-size: 10px;
-    position: absolute;
-    left: 20px;
-    top: 0;
-}
-
-.circle.intersection {
-    border-color: #000;
-    background-image: url("../assets/icons8-intersection-50.png");
-    background-size: 70%;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-
-.circle.active ~ .circle {
-    z-index: 0;
-}
-
-.circle img {
-    width: 100%;
-    height: 100%;
-}
-
-body, html, #root {
-    min-height: 100vh;
-    width: 100%;
-    display: flex;
-    /* align-items: center; */
-    justify-content: center;
-}
-
-* {
-    box-sizing: border-box;
-    max-width: 100%;
-}
-
-.dataBox {
-    position: absolute;
-    width: 250px;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px;
-    border-radius: 7px;
-    background-color: #0000008c;
-    max-width: none;
-    display: none;
-    z-index: 999999999999;
-}
-
-.dataBox .title {
-    text-align: right;
-    font-size: 11px;
-    margin-bottom: 9px;
-}
-
-.dataBox > .title span {
-    /* float: right; */
-    margin-left: 15px;
-    color: #fff;
-    text-decoration: underline;
-}
-
-.dataBox .lines {
-    background-color: #fff;
-    float: left;
-    width: 100%;
-    padding: 5px;
-    max-width: 100%;
-}
-
-.dataBox .lines > div {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-}
-
-.dataBox .lines > div span.h {
-    float: left;
-    width: 100%;
-    border-bottom: 2px solid;
-}
-
-.dataBox .lines > div span.h b {
-    background-color: #000;
-    color: #fff;
-    padding: 5px 9px;
-    float: left;
-    font-size: 13px;
-}
-
-.dataBox .lines > div strong {
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    float: left;
-    width: 100%;
-    margin-top: 9px;
-    justify-content: space-between;
-}
-
-.dataBox .lines > div strong span {
-    font-size: 11px;
-}
-
-.dataBox .lines > div strong p {
-    margin: 0;
-    font-size: 10px;
-}
-
-.dataBox .lines > div strong p i {
-    font-style: normal;
-    background-color: #ededed;
-    margin: 0 5px;
-}
-
-.circle.active .dataBox {
-    display: block;
+.page {
+  width: min(1200px, 100%);
+  height: 100dvh;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+  overflow: hidden;
 }
 
 .searchForm {
-    position: absolute;
-    left: 40px;
-    top: 30px;
-    background-color: #fff;
-    box-shadow: 1px 3px 10px #0000003d;
-    position: absolute;
-    width: 250px;
-    z-index: 1111111;
+  width: 100%;
+  max-width: 340px;
+  min-height: 0;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ddd;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
 }
 
-.searchForm .searchInputs {
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px;
+.searchHeader {
+  margin-bottom: 10px;
+  flex: 0 0 auto;
 }
 
-.searchForm .searchInputs .searchInput {
-    float: left;
-    width: 100%;
-    padding: 0 10px;
-    border-bottom: 1px solid #00000030;
-    display: flex;
-    align-items: center;
+.searchHeader strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
 }
 
-.searchForm .searchInputs .searchInput b {
-    width: 10px;
-    height: 10px;
-    border: 2px solid;
-    border-radius: 50%;
-    margin-right: 10px;
+.searchHeader span {
+  display: block;
+  margin-top: 4px;
+  color: #777;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
-.searchForm .searchInputs .searchInput input {
-    width: calc(100% - 10px - 13px);
-    border: none;
-    padding: 10px 0;
-    font-size: 12px;
-    outline: none;
+.searchInputs {
+  display: grid;
+  flex: 0 0 auto;
 }
 
-.searchForm .searchInputs .searchInput:last-child {
-    border: none;
+.searchInput {
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #e5e5e5;
 }
 
-.searchForm .autofill {
-    width: 87%;
-    max-height: 120px;
-    overflow: auto;
-    position: absolute;
-    top: 69px;
-    background-color: #fff;
-    border: 1px solid #bdbdbd;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 999999999;
-    padding: 5px;
-    transition: all .5s;
-    visibility: hidden;
-    opacity: 0;
-    transform: translateY(0) translateX(-50%);
+.searchInput:last-child {
+  border-bottom: none;
 }
 
-.searchForm .autofill.active {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(-5px) translateX(-50%);
+.searchInput > b {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
+  border: 2px solid;
+  border-radius: 50%;
 }
 
-.searchForm .autofill strong {
-    font-size: 11px;
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    color: #000000c4;
-    justify-content: space-between;
-    cursor: pointer;
+.searchInput input {
+  width: 100%;
+  padding: 10px 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 13px;
 }
 
-.searchForm .autofill strong .lines {
-    display: flex;
+.autofill {
+  position: relative;
+  z-index: 20;
+  max-height: 140px;
+  margin-top: 8px;
+  padding: 4px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  background: #fff;
+  display: none;
+  flex: 0 0 auto;
 }
 
-.searchForm .autofill strong .lines b {
-    font-size: 9px;
-    width: 15px;
-    height: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 5px;
-    color: #fff;
+.autofill.active {
+  display: block;
+}
+
+.autofill > strong {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: #444;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.autofill > strong:hover {
+  background: #f3f3f3;
+}
+
+.autofill > strong > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.autofill > strong small {
+  color: #999;
+  direction: ltr;
+  font-size: 10px;
+}
+
+.autofill .lines {
+  display: flex;
+  gap: 3px;
+}
+
+.autofill .lines b {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 10px;
 }
 
 .inquiry {
-    width: 100%;
-    float: left;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
-.inquiry strong {
-    font-size: 11px;
-    margin-bottom: 10px;
+.panelTitle {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.inquiry > span {
-    float: left;
-    width: 100%;
-    font-size: 12px;
-    color: #a5a5a5;
-    border-left: 4px solid;
-    padding: 7px 0 7px 15px;
-    position: relative;
+.panelTitle strong,
+.panelHeading {
+  font-size: 13px;
 }
 
-.inquiry > span > b {
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    left: -7px;
-    top: 10px;
-    border-radius: 50%;
-    border: 2px solid #9c9c9c;
-    background-color: #fff;
+.clearRoute {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  font-size: 11px;
 }
 
-.inquiry > span:is(:nth-child(2), :last-child) > b {
-    width: 15px;
-    left: -9px;
-    height: 15px;
-    border-width: 3px;
-    top: 0;
+.clearRoute:hover {
+  background: #f3f3f3;
 }
 
-.inquiry > span:last-child b {
-    top: auto;
-    bottom: 0;
+.sidebarPanel {
+  min-height: 0;
+  margin-top: 10px;
+  padding-top: 10px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border-top: 1px solid #eee;
 }
 
-.inquiry > span:is(:nth-child(2), :last-child) {
-    font-size: 13px;
-    font-weight: bold;
-    color: #000;
+.lineList {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  overflow: auto;
 }
 
-.inquiry > span:nth-child(2) {
-    padding-top: 0px;
+.lineList .panelHeading {
+  margin-bottom: 2px;
 }
 
-.inquiry > span:last-child {
-    padding-bottom: 0;
+.lineList button {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid #e8e8e8;
+  background: #fafafa;
+  color: inherit;
+  cursor: pointer;
+  text-align: right;
 }
 
-.inquiry > span.intersection {
-    color: #000;
+.lineList button:hover,
+.lineList button.active {
+  border-color: #bbb;
+  background: #f0f0f0;
+}
+
+.lineList button b {
+  width: 10px;
+  height: 10px;
+  margin-top: 3px;
+  flex: 0 0 auto;
+}
+
+.lineList button span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lineList button em {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lineList button small {
+  color: #777;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.routeMeta {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.routeMeta span {
+  padding: 3px 8px;
+  border: 1px solid #e6e6e6;
+  background: #f7f7f7;
+  color: #666;
+  font-size: 11px;
+}
+
+.routeList {
+  min-height: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.routeStep {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 34px;
+}
+
+.routeRail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.routeRail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--route-color, #ccc);
+}
+
+.routeStep.start .routeRail::before {
+  top: 12px;
+}
+
+.routeStep.end .routeRail::before {
+  bottom: calc(100% - 12px);
+}
+
+.routeRail i {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  margin-top: 8px;
+  border: 2px solid var(--route-color, #ccc);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.routeStep.start .routeRail i,
+.routeStep.end .routeRail i {
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border-width: 3px;
+}
+
+.routeStep.transfer .routeRail i {
+  width: 12px;
+  height: 12px;
+  margin-top: 6px;
+  border: 2.5px solid #333;
+  background: #fff;
+}
+
+.routeContent {
+  padding: 4px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.routeContent strong {
+  color: #777;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.routeStep.start .routeContent strong,
+.routeStep.end .routeContent strong,
+.routeStep.transfer .routeContent strong {
+  color: #1f1f1f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.routeContent em {
+  color: #888;
+  font-size: 10px;
+  font-style: normal;
+}
+
+.routeStep.start .routeContent em {
+  color: #1f7a3f;
+}
+
+.routeStep.end .routeContent em {
+  color: #c0392b;
+}
+
+.routeStep.transfer .routeContent em {
+  color: #555;
+}
+
+.mapBox {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.mapBoxTop {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid #eee;
+}
+
+.mapTitle {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.zoomControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.zoomControls button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.zoomControls button:hover {
+  background: #f3f3f3;
+}
+
+.zoomControls span {
+  min-width: 42px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.mapViewport {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  background: #fcfcfc;
+  cursor: grab;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: none;
+  direction: ltr;
+}
+
+.mapViewport.dragging {
+  cursor: grabbing;
+}
+
+.mapViewport.dragging .circle {
+  pointer-events: none;
+}
+
+.mapScaler {
+  position: relative;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+#map svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#map path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.2s ease;
+}
+
+.circle {
+  position: absolute;
+  z-index: 10;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 2px solid;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transition: opacity 0.2s ease;
+}
+
+.circle.intersection {
+  width: 17px;
+  height: 17px;
+  border-color: #222;
+}
+
+.circle > span {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  width: max-content;
+  max-width: 140px;
+  padding: 3px 5px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 11px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.circle:hover,
+.circle.active {
+  z-index: 40;
+}
+
+.circle:hover > span,
+.circle.active > span {
+  opacity: 1;
+}
+
+.dataBox {
+  position: absolute;
+  z-index: 100;
+  bottom: 22px;
+  left: 50%;
+  width: 240px;
+  padding: 10px;
+  display: none;
+  border: 1px solid #333;
+  background: #222;
+  color: #fff;
+  transform: translateX(-50%);
+}
+
+.circle.active .dataBox {
+  display: block;
+}
+
+.dataBox .title {
+  padding-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #555;
+}
+
+.dataBox .title strong {
+  font-size: 13px;
+}
+
+.dataBox .title small {
+  color: #bbb;
+  direction: ltr;
+  font-size: 10px;
+}
+
+.dataBox .lines {
+  padding-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.dataBox .lines b {
+  display: block;
+  padding: 5px 6px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .page {
+    grid-template-columns: 300px minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .searchForm {
+    max-height: none;
+    height: 100%;
+  }
+}
+
+@media (max-width: 899px) {
+  .page {
+    padding: 8px;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .searchForm {
+    max-width: none;
+    max-height: 34vh;
+  }
+
+  .mapBoxTop {
+    flex-direction: row;
+  }
+
+  .zoomControls {
+    align-self: auto;
+  }
 }
