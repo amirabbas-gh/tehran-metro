@@ -40,15 +40,6 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
       document.documentElement.removeEventListener("click", onDocumentClick);
   }, []);
 
-  const pairedLineIds = useMemo(() => {
-    const otherId =
-      focus === "d" ? originId : focus === "o" ? destinationId : 0;
-    if (!otherId) return null;
-
-    const other = stationsById.get(otherId);
-    return other ? other.lines.map((line) => line.id) : null;
-  }, [focus, originId, destinationId, stationsById]);
-
   const fillAutoFill = useCallback(
     (searchedText, selectedId = 0) => {
       const selected = selectedId ? stationsById.get(selectedId) : null;
@@ -58,35 +49,26 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
       const persianQuery = query ? raw : "";
       const matches = new Map();
 
-      const consider = (station) => {
-        if (matches.has(station.id)) return;
-        if (focus === "o" && station.id === destinationId) return;
-        if (focus === "d" && station.id === originId) return;
+      lines.forEach((line) => {
+        line.stations.forEach((station) => {
+          if (matches.has(station.id)) return;
+          if (focus === "o" && station.id === destinationId) return;
+          if (focus === "d" && station.id === originId) return;
 
-        const persianName = station.translations?.fa || "";
-        const matchesQuery =
-          !query ||
-          station.name.toLowerCase().includes(query) ||
-          persianName.includes(persianQuery);
-
-        if (matchesQuery) {
-          matches.set(station.id, withLineColors(station, lines));
-        }
-      };
-
-      // After one endpoint is chosen, suggest stations on the same line(s).
-      // Otherwise keep the full station list (same as before).
-      if (pairedLineIds?.length) {
-        lines
-          .filter((line) => pairedLineIds.includes(line.id))
-          .forEach((line) => line.stations.forEach(consider));
-      } else {
-        lines.forEach((line) => line.stations.forEach(consider));
-      }
+          const persianName = station.translations?.fa || "";
+          if (
+            !query ||
+            station.name.toLowerCase().includes(query) ||
+            persianName.includes(persianQuery)
+          ) {
+            matches.set(station.id, withLineColors(station, lines));
+          }
+        });
+      });
 
       setAutofills([...matches.values()]);
     },
-    [lines, pairedLineIds, focus, originId, destinationId, stationsById]
+    [lines, focus, originId, destinationId, stationsById]
   );
 
   useEffect(() => {
