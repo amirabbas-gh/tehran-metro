@@ -48,6 +48,17 @@ function easeOutCubic(t) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+function pointerDistance(a, b) {
+  return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+}
+
+function pointerMidpoint(a, b) {
+  return {
+    x: (a.clientX + b.clientX) / 2,
+    y: (a.clientY + b.clientY) / 2,
+  };
+}
+
 function App() {
   const viewport = useRef(null);
   const mapRef = useRef(null);
@@ -56,6 +67,12 @@ function App() {
   const animToken = useRef(0);
   const zoomSyncTimer = useRef(0);
   const mapSize = useRef({ width: 0, height: 0 });
+  const pointers = useRef(new Map());
+  const pinch = useRef({
+    active: false,
+    startDistance: 0,
+    startZoom: 1,
+  });
   const drag = useRef({
     active: false,
     moved: false,
@@ -274,6 +291,27 @@ function App() {
   useEffect(() => {
     const box = viewport.current;
     if (!box) return;
+    const activePointers = pointers.current;
+
+    const stopDrag = () => {
+      if (!drag.current.active) return;
+      drag.current.active = false;
+      setDragging(false);
+    };
+
+    const beginPinch = () => {
+      const points = [...activePointers.values()];
+      if (points.length < 2) return;
+
+      animToken.current += 1;
+      stopDrag();
+      drag.current.moved = true;
+      pinch.current = {
+        active: true,
+        startDistance: Math.max(1, pointerDistance(points[0], points[1])),
+        startZoom: zoomRef.current,
+      };
+    };
 
     const onWheel = (event) => {
       event.preventDefault();
@@ -293,8 +331,20 @@ function App() {
     };
 
     const onPointerDown = (event) => {
-      if (event.button !== 0) return;
+      if (event.button !== 0 && event.pointerType === "mouse") return;
+
       animToken.current += 1;
+      activePointers.set(event.pointerId, {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
+      box.setPointerCapture?.(event.pointerId);
+
+      if (activePointers.size >= 2) {
+        beginPinch();
+        return;
+      }
+
       drag.current = {
         active: true,
         moved: false,
@@ -304,11 +354,32 @@ function App() {
         scrollTop: box.scrollTop,
       };
       setDragging(true);
-      box.setPointerCapture?.(event.pointerId);
     };
 
     const onPointerMove = (event) => {
-      if (!drag.current.active) return;
+      if (!activePointers.has(event.pointerId)) return;
+
+      activePointers.set(event.pointerId, {
+        clientX: event.clientX,
+        clientY: event.clientY,
+      });
+
+      if (pinch.current.active && activePointers.size >= 2) {
+        event.preventDefault();
+        const points = [...activePointers.values()];
+        const distance = Math.max(1, pointerDistance(points[0], points[1]));
+        const mid = pointerMidpoint(points[0], points[1]);
+        const next = clampZoom(
+          pinch.current.startZoom * (distance / pinch.current.startDistance)
+        );
+        if (Math.abs(next - zoomRef.current) < 0.0001) return;
+        paintZoom(next, mid.x, mid.y);
+        syncZoomState(next);
+        return;
+      }
+
+      if (!drag.current.active || pinch.current.active) return;
+
       const dx = event.clientX - drag.current.startX;
       const dy = event.clientY - drag.current.startY;
       if (Math.abs(dx) > 3 || Math.abs(dy) > 3) drag.current.moved = true;
@@ -316,32 +387,60 @@ function App() {
       box.scrollTop = drag.current.scrollTop - dy;
     };
 
-    const endDrag = (event) => {
-      if (!drag.current.active) return;
-      drag.current.active = false;
-      setDragging(false);
+    const endPointer = (event) => {
+      if (!activePointers.has(event.pointerId)) return;
+
+      activePointers.delete(event.pointerId);
       try {
         box.releasePointerCapture?.(event.pointerId);
       } catch {
         /* ignore */
       }
+
+      if (activePointers.size < 2 && pinch.current.active) {
+        pinch.current.active = false;
+        syncZoomState(zoomRef.current, true);
+      }
+
+      if (activePointers.size === 1) {
+        const remaining = [...activePointers.values()][0];
+        drag.current = {
+          active: true,
+          moved: true,
+          startX: remaining.clientX,
+          startY: remaining.clientY,
+          scrollLeft: box.scrollLeft,
+          scrollTop: box.scrollTop,
+        };
+        setDragging(true);
+        return;
+      }
+
+      if (activePointers.size === 0) {
+        stopDrag();
+      }
+    };
+
+    const onTouchMove = (event) => {
+      if (event.touches.length >= 2) event.preventDefault();
     };
 
     box.addEventListener("wheel", onWheel, { passive: false });
     box.addEventListener("pointerdown", onPointerDown);
-    box.addEventListener("pointermove", onPointerMove);
-    box.addEventListener("pointerup", endDrag);
-    box.addEventListener("pointercancel", endDrag);
-    box.addEventListener("pointerleave", endDrag);
+    box.addEventListener("pointermove", onPointerMove, { passive: false });
+    box.addEventListener("pointerup", endPointer);
+    box.addEventListener("pointercancel", endPointer);
+    box.addEventListener("touchmove", onTouchMove, { passive: false });
 
     return () => {
       window.clearTimeout(zoomSyncTimer.current);
+      activePointers.clear();
       box.removeEventListener("wheel", onWheel);
       box.removeEventListener("pointerdown", onPointerDown);
       box.removeEventListener("pointermove", onPointerMove);
-      box.removeEventListener("pointerup", endDrag);
-      box.removeEventListener("pointercancel", endDrag);
-      box.removeEventListener("pointerleave", endDrag);
+      box.removeEventListener("pointerup", endPointer);
+      box.removeEventListener("pointercancel", endPointer);
+      box.removeEventListener("touchmove", onTouchMove);
     };
   }, [lines.length]);
 
