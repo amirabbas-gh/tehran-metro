@@ -24,23 +24,24 @@ Trains run both ways, so each link is an undirected edge. Transfer stations are 
 
 ## Graph representation
 
-Stored as an **adjacency list** (`src/graph.js` → `buildAdjacencyList`).
+Stored as an **adjacency list** (`src/lib/graph.ts` → `buildAdjacencyList`).
 
 The metro graph is **sparse** (\(|E| \ll |V|^2\)), so an adjacency list uses \(\Theta(n + e)\) space versus \(\Theta(n^2)\) for an adjacency matrix.
 
-## Algorithms (`src/graph.js`)
+## Algorithms (`src/lib/graph.ts`)
 
 | Algorithm | Role | Complexity |
 |-----------|------|------------|
 | **DFS** (`dfsFindPath`, `analyzeConnectivity`) | Path via recursive backtracking; builds a DFS spanning tree (tree edges / back edges); proves **connectivity** (one DFS from any vertex visits all \(V\) ⇒ \(G\) is connected) | \(O(n + e)\) |
-| **BFS** (`bfsFindPath`) | Route shown in the UI: **fewest stations** (unweighted shortest path) | \(O(n + e)\) |
+| **BFS** (`bfsFindPath`) | Unweighted shortest path (fewest stations); kept for comparison | \(O(n + e)\) |
+| **Dijkstra** (`dijkstraFindPath`) | Route shown in the UI: minimizes **distance (km) + transfer penalties** on a weighted graph; state = (station, arrival line) | \(O((n L + e L)\log(n L))\) |
 
-DFS finds *a* path, not necessarily the shortest. BFS minimizes hop count. For travel time or distance, use a **weighted** graph and **Dijkstra**.
+DFS finds *a* path, not necessarily the shortest. BFS minimizes hop count. Dijkstra minimizes travel distance while charging a penalty for each line change, so routes with fewer transfers are preferred unless a detour is much longer.
 
 ## App features
 
 - Interactive map of Tehran Metro lines (including branches)
-- Station search and origin → destination routing (BFS)
+- Station search and origin → destination routing (Dijkstra: distance + transfers)
 - Floating graph panel: \(|V|\), \(|E|\), and connectivity (DFS)
 
 ## Run

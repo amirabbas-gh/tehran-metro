@@ -69,6 +69,22 @@ export type PathFindResult = {
   visited: Set<number>;
 };
 
+/** Weighted shortest path from Dijkstra (distance + transfer penalties). */
+export type WeightedPathResult = {
+  path: GraphStation[];
+  /** Sum of haversine edge lengths along the path (km), excluding transfer penalties. */
+  distanceKm: number;
+  /** Number of line changes along the path. */
+  transferCount: number;
+  /** Total Dijkstra cost (distanceKm + transfer penalties). */
+  cost: number;
+};
+
+export type DijkstraOptions = {
+  /** Extra cost (km-equivalent) applied each time the rider changes lines. */
+  transferPenaltyKm?: number;
+};
+
 export type ConnectivityInfo = {
   connected: boolean;
   componentCount: number;

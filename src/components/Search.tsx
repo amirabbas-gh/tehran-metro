@@ -7,7 +7,7 @@ import {
   type CSSProperties,
   type ReactElement,
 } from "react";
-import { bfsFindPath, buildAdjacencyList } from "../lib/graph";
+import { buildAdjacencyList, dijkstraFindPath } from "../lib/graph";
 import {
   findNearestStation,
   geoErrorMessage,
@@ -21,6 +21,7 @@ import type {
   RouteStep,
   SearchFocus,
   StationLineMembership,
+  WeightedPathResult,
 } from "../types/metro";
 
 function withLineColors(
@@ -60,7 +61,10 @@ export default function Search({
   const [originId, setOriginId] = useState(0);
   const [destinationId, setDestinationId] = useState(0);
   const [focus, setFocus] = useState<SearchFocus>(false);
-  const [way, setWay] = useState<ReturnType<typeof bfsFindPath>>([]);
+  const [way, setWay] = useState<WeightedPathResult["path"]>([]);
+  const [routeStats, setRouteStats] = useState<
+    Pick<WeightedPathResult, "distanceKm" | "transferCount">
+  >({ distanceKm: 0, transferCount: 0 });
   const [sheetOpen, setSheetOpen] = useState(false);
   const [awaitingOrigin, setAwaitingOrigin] = useState(false);
   const [locating, setLocating] = useState(false);
@@ -257,6 +261,7 @@ export default function Search({
     setOriginId(0);
     setDestinationId(0);
     setWay([]);
+    setRouteStats({ distanceKm: 0, transferCount: 0 });
     setAwaitingOrigin(false);
     setLocating(false);
     setGeoHint("");
@@ -266,13 +271,18 @@ export default function Search({
   useEffect(() => {
     if (!originId || !destinationId) {
       setWay([]);
+      setRouteStats({ distanceKm: 0, transferCount: 0 });
       onRouteChange([]);
       return;
     }
 
-    const path = bfsFindPath(stationsById, originId, destinationId);
-    setWay(path);
-    onRouteChange(path.map((station) => station.id));
+    const result = dijkstraFindPath(stationsById, originId, destinationId);
+    setWay(result.path);
+    setRouteStats({
+      distanceKm: result.distanceKm,
+      transferCount: result.transferCount,
+    });
+    onRouteChange(result.path.map((station) => station.id));
   }, [originId, destinationId, stationsById, onRouteChange]);
 
   const showRoute = way.length > 0;
@@ -531,6 +541,17 @@ export default function Search({
 
                     <div className="routeMeta">
                       <span>{way.length} ایستگاه</span>
+                      <span>
+                        {routeStats.distanceKm < 10
+                          ? routeStats.distanceKm.toFixed(1)
+                          : Math.round(routeStats.distanceKm)}{" "}
+                        کیلومتر
+                      </span>
+                      <span>
+                        {routeStats.transferCount === 0
+                          ? "بدون تعویض خط"
+                          : `${routeStats.transferCount} تعویض خط`}
+                      </span>
                     </div>
 
                     <div className="routeList">

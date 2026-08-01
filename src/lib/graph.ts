@@ -1,10 +1,13 @@
 import type {
   ConnectivityInfo,
+  DijkstraOptions,
   EnrichedLine,
   GraphStation,
   MetroGraph,
   PathFindResult,
+  WeightedPathResult,
 } from "../types/metro";
+import { haversineKm, stationLongitude } from "./geo";
 
 /**
  * Discrete Mathematics — Tehran Metro as G = (V, E)
@@ -12,7 +15,120 @@ import type {
  * V = metro stations, E = undirected rail links between consecutive stations.
  * Representation: adjacency list (optimal for a sparse transit network:
  * space Θ(n + e) vs Θ(n²) for an adjacency matrix).
+ *
+ * Routing uses a weighted graph: edge weight = geographic distance (km).
+ * Line changes add a transfer penalty, so Dijkstra prefers fewer transfers
+ * unless the detour is significantly longer.
  */
+
+/** Default transfer cost ≈ a few inter-station hops (km-equivalent). */
+export const DEFAULT_TRANSFER_PENALTY_KM = 3;
+
+type DijkstraState = {
+  stationId: number;
+  /** Line used to arrive here; 0 = start (no incoming line yet). */
+  lineId: number;
+  cost: number;
+};
+
+function stateKey(stationId: number, lineId: number): number {
+  // lineId ∈ [0, 9] for Tehran metro; pack into a single integer key.
+  return stationId * 16 + lineId;
+}
+
+function unpackState(key: number): { stationId: number; lineId: number } {
+  return { stationId: Math.floor(key / 16), lineId: key % 16 };
+}
+
+/** Binary min-heap priority queue for Dijkstra. */
+class MinHeap {
+  private readonly items: DijkstraState[] = [];
+
+  get size(): number {
+    return this.items.length;
+  }
+
+  push(item: DijkstraState): void {
+    this.items.push(item);
+    this.bubbleUp(this.items.length - 1);
+  }
+
+  pop(): DijkstraState | undefined {
+    if (!this.items.length) return undefined;
+    const top = this.items[0];
+    const last = this.items.pop();
+    if (this.items.length && last) {
+      this.items[0] = last;
+      this.bubbleDown(0);
+    }
+    return top;
+  }
+
+  private bubbleUp(index: number): void {
+    let i = index;
+    while (i > 0) {
+      const parent = (i - 1) >> 1;
+      if (this.items[i].cost >= this.items[parent].cost) break;
+      [this.items[i], this.items[parent]] = [this.items[parent], this.items[i]];
+      i = parent;
+    }
+  }
+
+  private bubbleDown(index: number): void {
+    let i = index;
+    const n = this.items.length;
+    while (true) {
+      const left = i * 2 + 1;
+      const right = left + 1;
+      let smallest = i;
+      if (left < n && this.items[left].cost < this.items[smallest].cost) {
+        smallest = left;
+      }
+      if (right < n && this.items[right].cost < this.items[smallest].cost) {
+        smallest = right;
+      }
+      if (smallest === i) break;
+      [this.items[i], this.items[smallest]] = [
+        this.items[smallest],
+        this.items[i],
+      ];
+      i = smallest;
+    }
+  }
+}
+
+/** Lines on which `from` and `to` are consecutive stations. */
+function connectingLineIds(
+  from: GraphStation,
+  to: GraphStation
+): number[] {
+  const ids: number[] = [];
+  for (const line of from.lines) {
+    for (const other of to.lines) {
+      if (
+        line.id === other.id &&
+        Math.abs(line.serial_number - other.serial_number) === 1
+      ) {
+        ids.push(line.id);
+      }
+    }
+  }
+  return ids;
+}
+
+function edgeDistanceKm(from: GraphStation, to: GraphStation): number {
+  const lon1 = stationLongitude(from);
+  const lon2 = stationLongitude(to);
+  if (
+    from.latitude == null ||
+    to.latitude == null ||
+    lon1 == null ||
+    lon2 == null
+  ) {
+    return 1;
+  }
+  return haversineKm(from.latitude, lon1, to.latitude, lon2);
+}
 
 /**
  * Build an undirected adjacency-list graph from ordered line station sequences.
@@ -126,6 +242,7 @@ export function dfsFindPath(
 /**
  * Breadth-First Search — fewest stations (unweighted shortest path).
  * Time: O(n + e). Prefer this over DFS when minimizing hop count.
+ * Kept for graph-theory demos; the UI routes with {@link dijkstraFindPath}.
  */
 export function bfsFindPath(
   stationsById: MetroGraph,
@@ -165,6 +282,149 @@ export function bfsFindPath(
   }
 
   return [];
+}
+
+/**
+ * Dijkstra — weighted shortest path.
+ *
+ * State space is (station, arrival line) so transfer cost can be applied when
+ * the rider leaves on a different line than they arrived on.
+ *
+ * Edge weight = haversine distance (km). Changing lines adds `transferPenaltyKm`.
+ * Time: O((n·L + e·L) log(n·L)) with a binary heap (L = lines per station).
+ */
+export function dijkstraFindPath(
+  stationsById: MetroGraph,
+  originId: number,
+  destinationId: number,
+  options: DijkstraOptions = {}
+): WeightedPathResult {
+  const empty: WeightedPathResult = {
+    path: [],
+    distanceKm: 0,
+    transferCount: 0,
+    cost: 0,
+  };
+
+  if (!stationsById.has(originId) || !stationsById.has(destinationId)) {
+    return empty;
+  }
+
+  if (originId === destinationId) {
+    const origin = stationsById.get(originId);
+    return {
+      path: origin ? [origin] : [],
+      distanceKm: 0,
+      transferCount: 0,
+      cost: 0,
+    };
+  }
+
+  const transferPenaltyKm =
+    options.transferPenaltyKm ?? DEFAULT_TRANSFER_PENALTY_KM;
+
+  const dist = new Map<number, number>();
+  const parent = new Map<number, number | null>();
+  const heap = new MinHeap();
+
+  const startKey = stateKey(originId, 0);
+  dist.set(startKey, 0);
+  parent.set(startKey, null);
+  heap.push({ stationId: originId, lineId: 0, cost: 0 });
+
+  let bestGoalKey: number | null = null;
+
+  while (heap.size) {
+    const current = heap.pop();
+    if (!current) break;
+
+    const uKey = stateKey(current.stationId, current.lineId);
+    const bestKnown = dist.get(uKey);
+    if (bestKnown !== undefined && current.cost > bestKnown) continue;
+
+    if (current.stationId === destinationId) {
+      bestGoalKey = uKey;
+      break;
+    }
+
+    const u = stationsById.get(current.stationId);
+    if (!u) continue;
+
+    for (const vId of u.neighbors) {
+      const v = stationsById.get(vId);
+      if (!v) continue;
+
+      const lines = connectingLineIds(u, v);
+      if (!lines.length) continue;
+
+      const hopKm = edgeDistanceKm(u, v);
+
+      for (const nextLineId of lines) {
+        const transferCost =
+          current.lineId !== 0 && current.lineId !== nextLineId
+            ? transferPenaltyKm
+            : 0;
+        const nextCost = current.cost + hopKm + transferCost;
+        const vKey = stateKey(vId, nextLineId);
+        const prev = dist.get(vKey);
+
+        if (prev !== undefined && nextCost >= prev) continue;
+
+        dist.set(vKey, nextCost);
+        parent.set(vKey, uKey);
+        heap.push({ stationId: vId, lineId: nextLineId, cost: nextCost });
+      }
+    }
+  }
+
+  if (bestGoalKey === null) return empty;
+
+  const stateKeys: number[] = [];
+  let cursor: number | null = bestGoalKey;
+  while (cursor !== null) {
+    stateKeys.push(cursor);
+    cursor = parent.get(cursor) ?? null;
+  }
+  stateKeys.reverse();
+
+  const path: GraphStation[] = [];
+  let transferCount = 0;
+  let distanceKm = 0;
+  let previousLineId = 0;
+
+  for (let i = 0; i < stateKeys.length; i++) {
+    const { stationId, lineId } = unpackState(stateKeys[i]);
+    const station = stationsById.get(stationId);
+    if (!station) break;
+
+    if (
+      i > 0 &&
+      previousLineId !== 0 &&
+      lineId !== 0 &&
+      previousLineId !== lineId
+    ) {
+      transferCount += 1;
+    }
+
+    if (i > 0) {
+      const prevStation = path[path.length - 1];
+      distanceKm += edgeDistanceKm(prevStation, station);
+    }
+
+    // Collapse consecutive duplicate stations (should not happen, but safe).
+    if (!path.length || path[path.length - 1].id !== station.id) {
+      path.push(station);
+    }
+
+    if (lineId !== 0) previousLineId = lineId;
+  }
+
+  return {
+    path,
+    distanceKm,
+    transferCount,
+    cost: dist.get(bestGoalKey) ?? distanceKm,
+  };
 }
 
 /**
