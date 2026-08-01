@@ -1,5 +1,11 @@
 # tehran-metro
 
+## 1.4.0
+
+### Minor Changes
+
+- 2b65f51: Ship a Trusted Web Activity APK (targetSdk 35) for Android install, serve Digital Asset Links, and route the install banner on Android to download that package so Play Protect no longer blocks on an outdated SDK.
+
 ## 1.3.0
 
 ### Minor Changes
