@@ -1,7 +1,7 @@
 {
   "name": "tehran-metro",
   "private": true,
-  "version": "1.4.0",
+  "version": "1.5.0",
   "packageManager": "pnpm@11.18.0",
   "type": "module",
   "repository": {
