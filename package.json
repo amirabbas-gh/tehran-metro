@@ -2,6 +2,7 @@
   "name": "tehran-metro",
   "private": true,
   "version": "0.0.0",
+  "packageManager": "pnpm@11.18.0",
   "type": "module",
   "repository": {
     "type": "git",
