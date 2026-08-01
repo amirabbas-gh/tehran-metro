@@ -1,5 +1,11 @@
 # tehran-metro
 
+## 1.3.0
+
+### Minor Changes
+
+- 43bec85: Notify installed PWA users when a newer release appears in the remote CHANGELOG, using the same banner style as the install prompt.
+
 ## 1.2.0
 
 ### Minor Changes
