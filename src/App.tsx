@@ -24,8 +24,10 @@ import {
 } from "./lib/metro-data";
 import {
   dismissRemoteUpdate,
+  downloadAndroidApk,
   fetchRemoteUpdate,
   isInstalledPwa,
+  shouldOfferAndroidApk,
   type RemoteUpdateInfo,
 } from "./lib/pwa";
 import { applyTheme, getPreferredTheme, persistTheme } from "./lib/theme";
@@ -60,6 +62,9 @@ export default function App(): ReactElement {
   const [goRequest, setGoRequest] = useState<GoRequest | null>(null);
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
+  const [androidApkOffer, setAndroidApkOffer] = useState(() =>
+    shouldOfferAndroidApk()
+  );
   const [installUi, setInstallUi] = useState<InstallUi>("banner");
   const [updateReady, setUpdateReady] = useState(false);
   const [remoteUpdate, setRemoteUpdate] = useState<RemoteUpdateInfo | null>(
@@ -67,6 +72,7 @@ export default function App(): ReactElement {
   );
   const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
 
+  const showInstall = Boolean(installPrompt) || androidApkOffer;
   const latestChangelogEntries = useMemo(
     () => parseLatestChangelogEntries(changelogRaw),
     []
@@ -171,7 +177,7 @@ export default function App(): ReactElement {
   }, []);
 
   useEffect(() => {
-    if (!installPrompt || installUi !== "banner") return;
+    if (!showInstall || installUi !== "banner") return;
 
     const dismiss = (event: Event) => {
       const target = event.target as Element | null;
@@ -185,9 +191,15 @@ export default function App(): ReactElement {
       window.removeEventListener("pointerdown", dismiss, true);
       window.removeEventListener("keydown", dismiss, true);
     };
-  }, [installPrompt, installUi]);
+  }, [showInstall, installUi]);
 
   async function runInstall() {
+    if (androidApkOffer) {
+      downloadAndroidApk();
+      setAndroidApkOffer(false);
+      setInstallPrompt(null);
+      return;
+    }
     if (!installPrompt) return;
     await installPrompt.prompt();
     await installPrompt.userChoice;
@@ -285,7 +297,7 @@ export default function App(): ReactElement {
         onToggleTheme={() =>
           setTheme((current) => (current === "dark" ? "light" : "dark"))
         }
-        showInstallChip={Boolean(installPrompt && installUi === "chip")}
+        showInstallChip={Boolean(showInstall && installUi === "chip")}
         onInstallChipClick={() => {
           void runInstall();
         }}
@@ -314,7 +326,7 @@ export default function App(): ReactElement {
         onApplyUpdate={applyUpdate}
         onDismissUpdate={dismissUpdate}
         changelogLead={changelogLead}
-        installPrompt={installPrompt}
+        showInstall={showInstall}
         installUi={installUi}
         onInstall={() => {
           void runInstall();

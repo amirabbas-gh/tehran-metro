@@ -8,6 +8,9 @@ import { safeStorageGet, safeStorageSet } from "./storage";
 export const REMOTE_CHANGELOG_URL =
   "https://raw.githubusercontent.com/amirabbas-gh/tehran-metro/main/CHANGELOG.md";
 
+/** Signed TWA APK (targetSdk 35) served from /public for Android sideload. */
+export const ANDROID_APK_URL = "/metro-tehran.apk";
+
 const DISMISSED_UPDATE_KEY = "dismissed-remote-update";
 
 export function isInstalledPwa(): boolean {
@@ -15,6 +18,25 @@ export function isInstalledPwa(): boolean {
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true
   );
+}
+
+export function isAndroidDevice(): boolean {
+  return /Android/i.test(navigator.userAgent);
+}
+
+/** Prefer the packaged APK on Android so Play Protect sees a modern targetSdk. */
+export function shouldOfferAndroidApk(): boolean {
+  return isAndroidDevice() && !isInstalledPwa();
+}
+
+export function downloadAndroidApk(): void {
+  const link = document.createElement("a");
+  link.href = ANDROID_APK_URL;
+  link.download = "metro-tehran.apk";
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
 export type RemoteUpdateInfo = {

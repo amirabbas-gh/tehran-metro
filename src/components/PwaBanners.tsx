@@ -1,6 +1,5 @@
 import type { ReactElement } from "react";
 import { toPersianDigits } from "../lib/format";
-import type { BeforeInstallPromptEvent } from "../types/pwa";
 import type { InstallUi } from "../types/metro";
 
 export type PwaBannersProps = {
@@ -8,7 +7,7 @@ export type PwaBannersProps = {
   onApplyUpdate: () => void;
   onDismissUpdate: () => void;
   changelogLead: string | undefined;
-  installPrompt: BeforeInstallPromptEvent | null;
+  showInstall: boolean;
   installUi: InstallUi;
   onInstall: () => void;
   onDismissInstall: () => void;
@@ -20,7 +19,7 @@ export default function PwaBanners({
   onApplyUpdate,
   onDismissUpdate,
   changelogLead,
-  installPrompt,
+  showInstall,
   installUi,
   onInstall,
   onDismissInstall,
@@ -57,7 +56,7 @@ export default function PwaBanners({
     );
   }
 
-  if (installPrompt && (installUi === "banner" || installUi === "leaving")) {
+  if (showInstall && (installUi === "banner" || installUi === "leaving")) {
     return (
       <div
         className={`installBanner${installUi === "leaving" ? " isLeaving" : ""}`}
