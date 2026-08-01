@@ -4,6 +4,7 @@ import Stations from "./assets/data/stations.json";
 import Lines from "./assets/data/lines.json";
 import Search from "./Search";
 import { analyzeConnectivity, buildAdjacencyList } from "./graph";
+import changelogRaw from "../CHANGELOG.md?raw";
 
 const BASE_SCALE = 1100;
 const MIN_ZOOM = 0.55;
@@ -96,6 +97,22 @@ function releasePointerCaptureSafe(element, pointerId) {
   }
 }
 
+// Pulls the bullet lines out of the newest "## ..." section of CHANGELOG.md
+// so the update banner can show what actually changed (see `pnpm changelog`).
+function parseLatestChangelogEntries(raw) {
+  const headingRe = /^##\s+.*$/gm;
+  const first = headingRe.exec(raw);
+  if (!first) return [];
+  const start = first.index + first[0].length;
+  const end = headingRe.exec(raw)?.index ?? raw.length;
+  return raw
+    .slice(start, end)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("- "))
+    .map((line) => line.slice(2).trim());
+}
+
 function getPreferredTheme() {
   const saved = safeStorageGet("theme");
   if (saved === "light" || saved === "dark") return saved;
@@ -161,6 +178,10 @@ function App() {
   const [installUi, setInstallUi] = useState("banner"); // banner | leaving | chip
   const [updateReady, setUpdateReady] = useState(false);
   const [theme, setTheme] = useState(() => getPreferredTheme());
+  const latestChangelogEntries = useMemo(
+    () => parseLatestChangelogEntries(changelogRaw),
+    []
+  );
 
   const closeStationCard = () => {
     setStationCardUi((ui) => (ui === "open" ? "leaving" : ui));
@@ -498,10 +519,11 @@ function App() {
     const onPointerDown = (event) => {
       if (event.button !== 0 && event.pointerType === "mouse") return;
 
-      const onStation = Boolean(event.target?.closest?.(".circle"));
+      const stationEl = event.target?.closest?.(".circle") ?? null;
+      const stationId = stationEl?.dataset.stationId ?? null;
 
       animToken.current += 1;
-      // Always track the pointer so a finger on a station can still pinch-zoom.
+      // Always track the pointer so a finger on a station can still pan/pinch.
       activePointers.set(event.pointerId, {
         clientX: event.clientX,
         clientY: event.clientY,
@@ -515,11 +537,13 @@ function App() {
         return;
       }
 
-      // Single finger on a station: track for a possible pinch, but let the
-      // station button handle the tap (no capture / no pan).
-      if (onStation) return;
-
-      setPointerCaptureSafe(box, event.pointerId);
+      // Don't capture yet when the touch starts on a station: capturing now
+      // would retarget the click away from the button and break plain taps.
+      // We still arm a pending drag so a real pan starting on a station
+      // (finger moves past the tap threshold) keeps working; see onPointerMove.
+      if (!stationId) {
+        setPointerCaptureSafe(box, event.pointerId);
+      }
 
       drag.current = {
         active: true,
@@ -528,7 +552,7 @@ function App() {
         startY: event.clientY,
         scrollLeft: box.scrollLeft,
         scrollTop: box.scrollTop,
-        stationId: null,
+        stationId,
       };
     };
 
@@ -562,6 +586,12 @@ function App() {
         if (!drag.current.moved) {
           drag.current.moved = true;
           setDragging(true);
+          if (drag.current.stationId) {
+            // The gesture turned out to be a pan, not a tap: take over the
+            // pointer now and make sure the station's click gets ignored.
+            skipStationClick.current = true;
+            setPointerCaptureSafe(box, event.pointerId);
+          }
         }
       }
       if (!drag.current.moved) return;
@@ -982,7 +1012,10 @@ function App() {
           <img src="/icon-192.png" alt="" width="40" height="40" />
           <div className="installBannerText">
             <strong>نسخه جدید آماده است</strong>
-            <span className="installDesc">برای دریافت تغییرات جدید، اپ را به‌روزرسانی کنید</span>
+            <span className="installDesc">
+              {latestChangelogEntries[0] ??
+                "برای دریافت تغییرات جدید، اپ را به‌روزرسانی کنید"}
+            </span>
             <span className="installShort">آپدیت جدید</span>
           </div>
           <button type="button" className="installBannerGo" onClick={applyUpdate}>

@@ -1,0 +1,70 @@
+name: Release
+
+# Runs on every push to main (including when a PR is merged into main).
+#
+# 1. If there are pending changesets (added via `pnpm changeset`), the
+#    changesets/action creates/updates a "Version Packages" pull request
+#    that bumps the version in package.json and updates CHANGELOG.md.
+# 2. When that release PR is merged, this workflow runs again on the
+#    resulting push to main. This time there are no pending changesets left
+#    (`hasChangesets == 'false'`), which is our signal to deploy: SSH into
+#    the server, pull the just-merged main, and rebuild.
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create release pull request
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm run version
+          title: "chore: version packages"
+          commit: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Only runs on the push that results from merging the "Version
+      # Packages" PR, once no changesets are left pending.
+      - name: Deploy to server
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /var/www/tehran-metro/
+            git remote set-url origin git@github.com:amirabbas-gh/tehran-metro.git
+            git pull
+            pnpm run build
