@@ -1,5 +1,11 @@
 # tehran-metro
 
+## 1.0.0
+
+### Major Changes
+
+- a2915d5: rewrite in typescript
+
 ## 0.0.1
 
 ### Patch Changes
