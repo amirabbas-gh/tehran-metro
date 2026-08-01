@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { bfsFindPath, buildAdjacencyList } from "./graph";
 
 function stationLabel(station) {
@@ -15,7 +15,49 @@ function withLineColors(station, lines) {
   };
 }
 
-const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
+function haversineKm(lat1, lon1, lat2, lon2) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function findNearestStation(stations, latitude, longitude) {
+  let best = null;
+  let bestKm = Infinity;
+
+  for (const station of stations) {
+    const lon = station.longtitude ?? station.longitude;
+    if (station.latitude == null || lon == null) continue;
+    const km = haversineKm(latitude, longitude, station.latitude, lon);
+    if (km < bestKm) {
+      bestKm = km;
+      best = station;
+    }
+  }
+
+  return best ? { station: best, km: bestKm } : null;
+}
+
+function geoErrorMessage(error) {
+  if (!error) return "موقعیت شما پیدا نشد.";
+  if (error.code === 1) return "دسترسی به موقعیت رد شد. مبدا را دستی انتخاب کنید.";
+  if (error.code === 2) return "موقعیت در دسترس نیست. مبدا را دستی انتخاب کنید.";
+  if (error.code === 3) return "دریافت موقعیت طول کشید. دوباره تلاش کنید یا دستی انتخاب کنید.";
+  return "موقعیت شما پیدا نشد. مبدا را دستی انتخاب کنید.";
+}
+
+const Search = ({
+  lines,
+  focusedLine,
+  onFocusLine,
+  onRouteChange,
+  goRequest,
+  onGoRequestHandled,
+}) => {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [autofills, setAutofills] = useState([]);
@@ -25,8 +67,19 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
   const [focus, setFocus] = useState(false);
   const [way, setWay] = useState([]);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [awaitingOrigin, setAwaitingOrigin] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [geoHint, setGeoHint] = useState("");
+  const originInputRef = useRef(null);
+  const originIdRef = useRef(0);
 
   const stationsById = useMemo(() => buildAdjacencyList(lines), [lines]);
+  const uniqueStations = useMemo(
+    () => Array.from(stationsById.values()),
+    [stationsById]
+  );
+
+  originIdRef.current = originId;
 
   useEffect(() => {
     const onDocumentClick = () => {
@@ -44,6 +97,120 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
   useEffect(() => {
     if (way.length > 0) setSheetOpen(true);
   }, [way.length]);
+
+  useEffect(() => {
+    if (originId && awaitingOrigin) {
+      setAwaitingOrigin(false);
+      setGeoHint("");
+    }
+  }, [originId, awaitingOrigin]);
+
+  useEffect(() => {
+    if (!goRequest?.destinationId) return;
+
+    const dest = stationsById.get(goRequest.destinationId);
+    if (!dest) {
+      onGoRequestHandled?.();
+      return;
+    }
+
+    const label = stationLabel(dest);
+    const currentOriginId = originIdRef.current;
+
+    setDestination(label);
+    setDestinationId(dest.id);
+    setAutofill(false);
+    setFocus(false);
+    setSheetOpen(true);
+    setGeoHint("");
+
+    if (currentOriginId && currentOriginId !== dest.id) {
+      setAwaitingOrigin(false);
+    } else {
+      if (currentOriginId === dest.id) {
+        setOrigin("");
+        setOriginId(0);
+      }
+      setAwaitingOrigin(true);
+    }
+
+    onGoRequestHandled?.();
+  }, [goRequest, stationsById, onGoRequestHandled]);
+
+  const applyOriginStation = useCallback((station) => {
+    if (!station) return;
+    setOrigin(stationLabel(station));
+    setOriginId(station.id);
+    setAwaitingOrigin(false);
+    setAutofill(false);
+    setFocus(false);
+    setGeoHint("");
+    setSheetOpen(true);
+  }, []);
+
+  const useNearestOrigin = useCallback(() => {
+    if (!navigator.geolocation) {
+      setGeoHint("مرورگر شما از موقعیت جغرافیایی پشتیبانی نمی‌کند.");
+      originInputRef.current?.focus();
+      setFocus("o");
+      setAutofill(true);
+      return;
+    }
+
+    setLocating(true);
+    setGeoHint("");
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocating(false);
+        const { latitude, longitude } = position.coords;
+        const nearest = findNearestStation(uniqueStations, latitude, longitude);
+
+        if (!nearest) {
+          setGeoHint("ایستگاه نزدیکی پیدا نشد.");
+          return;
+        }
+
+        if (nearest.station.id === destinationId) {
+          setGeoHint(
+            "نزدیک‌ترین ایستگاه همان مقصد است. مبدا دیگری انتخاب کنید."
+          );
+          originInputRef.current?.focus();
+          setFocus("o");
+          setAutofill(true);
+          return;
+        }
+
+        console.log(
+          "nearest station distance (km):",
+          nearest.km,
+          stationLabel(nearest.station)
+        );
+
+        applyOriginStation(nearest.station);
+      },
+      (error) => {
+        setLocating(false);
+        setGeoHint(geoErrorMessage(error));
+        originInputRef.current?.focus();
+        setFocus("o");
+        setAutofill(true);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 12000,
+        maximumAge: 60000,
+      }
+    );
+  }, [uniqueStations, destinationId, applyOriginStation]);
+
+  const pickOriginManually = useCallback(() => {
+    setGeoHint("");
+    setSheetOpen(true);
+    setFocus("o");
+    setAutofill(true);
+    window.setTimeout(() => originInputRef.current?.focus(), 50);
+  }, []);
 
   const fillAutoFill = useCallback(
     (searchedText, selectedId = 0) => {
@@ -96,6 +263,9 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
     setOriginId(0);
     setDestinationId(0);
     setWay([]);
+    setAwaitingOrigin(false);
+    setLocating(false);
+    setGeoHint("");
     onRouteChange?.([]);
   }, [onRouteChange]);
 
@@ -198,23 +368,44 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
             <b style={{ borderColor: "green" }} />
             <input
               id="o"
+              ref={originInputRef}
               placeholder="ایستگاه مبدا"
               value={origin}
               autoComplete="off"
               enterKeyHint="search"
-            onChange={({ target }) => {
-              setOrigin(target.value);
-              setOriginId(0);
-              setFocus("o");
-              setAutofill(true);
-              setSheetOpen(true);
-            }}
-            onFocus={() => {
-              setFocus("o");
-              setAutofill(true);
-              setSheetOpen(true);
-            }}
+              onChange={({ target }) => {
+                setOrigin(target.value);
+                setOriginId(0);
+                setGeoHint("");
+                setFocus("o");
+                setAutofill(true);
+                setSheetOpen(true);
+              }}
+              onFocus={() => {
+                setFocus("o");
+                setAutofill(true);
+                setSheetOpen(true);
+              }}
             />
+            <button
+              type="button"
+              className={`originLocateBtn${locating ? " isLoading" : ""}`}
+              onClick={useNearestOrigin}
+              disabled={locating}
+              title="نزدیک‌ترین ایستگاه به موقعیت فعلی"
+              aria-label="نزدیک‌ترین ایستگاه به موقعیت فعلی"
+            >
+              {locating ? (
+                <span className="originLocateSpinner" aria-hidden="true" />
+              ) : (
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06ZM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7Z"
+                  />
+                </svg>
+              )}
+            </button>
           </div>
           <div className="searchInput">
             <b style={{ borderColor: "red" }} />
@@ -224,21 +415,54 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
               value={destination}
               autoComplete="off"
               enterKeyHint="search"
-            onChange={({ target }) => {
-              setDestination(target.value);
-              setDestinationId(0);
-              setFocus("d");
-              setAutofill(true);
-              setSheetOpen(true);
-            }}
-            onFocus={() => {
-              setFocus("d");
-              setAutofill(true);
-              setSheetOpen(true);
-            }}
+              onChange={({ target }) => {
+                setDestination(target.value);
+                setDestinationId(0);
+                setFocus("d");
+                setAutofill(true);
+                setSheetOpen(true);
+              }}
+              onFocus={() => {
+                setFocus("d");
+                setAutofill(true);
+                setSheetOpen(true);
+              }}
             />
           </div>
         </div>
+
+        {awaitingOrigin ? (
+          <div className="originAssist" role="status">
+            <p>
+              مقصد <strong>{destination}</strong> ثبت شد. مبدا را مشخص کنید:
+            </p>
+            <div className="originAssistActions">
+              <button
+                type="button"
+                className="originAssistPrimary"
+                onClick={useNearestOrigin}
+                disabled={locating}
+              >
+                {locating ? "در حال یافتن موقعیت…" : "نزدیک‌ترین ایستگاه به من"}
+              </button>
+              <button
+                type="button"
+                className="originAssistSecondary"
+                onClick={pickOriginManually}
+                disabled={locating}
+              >
+                انتخاب دستی
+              </button>
+            </div>
+            {geoHint ? <span className="originAssistHint isError">{geoHint}</span> : null}
+          </div>
+        ) : null}
+
+        {geoHint && !awaitingOrigin ? (
+          <div className="originAssist" role="status">
+            <span className="originAssistHint isError">{geoHint}</span>
+          </div>
+        ) : null}
       </div>
 
       <div className="sheetBody">
@@ -255,6 +479,8 @@ const Search = ({ lines, focusedLine, onFocusLine, onRouteChange }) => {
                       if (focus === "o") {
                         setOrigin(label);
                         setOriginId(fill.id);
+                        setAwaitingOrigin(false);
+                        setGeoHint("");
                       } else {
                         setDestination(label);
                         setDestinationId(fill.id);

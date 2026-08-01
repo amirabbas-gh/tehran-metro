@@ -87,6 +87,7 @@ function App() {
   const [routeStationIds, setRouteStationIds] = useState([]);
   const [lines, setLines] = useState([]);
   const [selectedStationId, setSelectedStationId] = useState(null);
+  const [goRequest, setGoRequest] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [installUi, setInstallUi] = useState("banner"); // banner | leaving | chip
 
@@ -103,6 +104,23 @@ function App() {
     });
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
+
+  // Once the user starts interacting with the app, fade the install banner away.
+  useEffect(() => {
+    if (!installPrompt || installUi !== "banner") return;
+
+    const dismiss = (event) => {
+      if (event.target?.closest?.(".installBanner")) return;
+      setInstallUi("leaving");
+    };
+
+    window.addEventListener("pointerdown", dismiss, true);
+    window.addEventListener("keydown", dismiss, true);
+    return () => {
+      window.removeEventListener("pointerdown", dismiss, true);
+      window.removeEventListener("keydown", dismiss, true);
+    };
+  }, [installPrompt, installUi]);
 
   async function runInstall() {
     if (!installPrompt) return;
@@ -503,6 +521,8 @@ function App() {
           setFocusedLine((current) => (current === lineId ? null : lineId))
         }
         onRouteChange={setRouteStationIds}
+        goRequest={goRequest}
+        onGoRequestHandled={() => setGoRequest(null)}
       />
 
       <section className="mapBox">
@@ -657,9 +677,24 @@ function App() {
 
         {selectedStation ? (
           <aside className="stationCard" aria-live="polite">
-            <div className="title">
-              <strong>{stationLabel(selectedStation)}</strong>
-              <small>{selectedStation.name}</small>
+            <div className="stationCardHead">
+              <div className="title">
+                <strong>{stationLabel(selectedStation)}</strong>
+                <small>{selectedStation.name}</small>
+              </div>
+              <button
+                type="button"
+                className="stationCardClose"
+                aria-label="بستن"
+                onClick={() => setSelectedStationId(null)}
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                  <path
+                    fill="currentColor"
+                    d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.71 2.89 18.3 9.17 12 2.89 5.71 4.3 4.29l6.29 6.3 6.29-6.3z"
+                  />
+                </svg>
+              </button>
             </div>
             <div className="lines">
               {selectedStation.timing_lines.map((line) => (
@@ -671,11 +706,22 @@ function App() {
             </div>
             <button
               type="button"
-              className="stationCardClose"
-              aria-label="بستن"
-              onClick={() => setSelectedStationId(null)}
+              className="stationCardGo"
+              onClick={() => {
+                setGoRequest({
+                  destinationId: selectedStation.id,
+                  token: Date.now(),
+                });
+                setSelectedStationId(null);
+              }}
             >
-              بستن
+              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"
+                />
+              </svg>
+              <span>رفتن به اینجا</span>
             </button>
           </aside>
         ) : null}
