@@ -23,6 +23,26 @@
       href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function () {
+        try {
+          var theme = localStorage.getItem("theme");
+          if (theme !== "light" && theme !== "dark") {
+            theme = matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", theme);
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) {
+            meta.setAttribute(
+              "content",
+              theme === "dark" ? "#1c1d21" : "#ffcc00"
+            );
+          }
+        } catch (e) {}
+      })();
+    </script>
     <title>نقشه متروی تهران</title>
   </head>
   <body>

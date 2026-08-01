@@ -60,6 +60,36 @@ function pointerMidpoint(a, b) {
   };
 }
 
+function getPreferredTheme() {
+  try {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light" || saved === "dark") return saved;
+  } catch {
+    /* ignore */
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  root.classList.add("theme-switching");
+  root.setAttribute("data-theme", theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute(
+      "content",
+      theme === "dark" ? "#1c1d21" : "#ffcc00"
+    );
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      root.classList.remove("theme-switching");
+    });
+  });
+}
+
 function App() {
   const viewport = useRef(null);
   const mapRef = useRef(null);
@@ -81,6 +111,7 @@ function App() {
     startY: 0,
     scrollLeft: 0,
     scrollTop: 0,
+    stationId: null,
   });
   const [zoom, setZoom] = useState(() => initialZoom());
   const [dragging, setDragging] = useState(false);
@@ -88,9 +119,46 @@ function App() {
   const [routeStationIds, setRouteStationIds] = useState([]);
   const [lines, setLines] = useState([]);
   const [selectedStationId, setSelectedStationId] = useState(null);
+  const [stationCardUi, setStationCardUi] = useState("closed"); // closed | open | leaving
+  const stationCardIdRef = useRef(null);
   const [goRequest, setGoRequest] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [installUi, setInstallUi] = useState("banner"); // banner | leaving | chip
+  const [theme, setTheme] = useState(() => getPreferredTheme());
+
+  const closeStationCard = () => {
+    setStationCardUi((ui) => (ui === "open" ? "leaving" : ui));
+    setSelectedStationId(null);
+  };
+
+  const openStationCard = (stationId) => {
+    stationCardIdRef.current = stationId;
+    setSelectedStationId(stationId);
+    setStationCardUi("open");
+  };
+
+  useLayoutEffect(() => {
+    applyTheme(theme);
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      /* ignore */
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => {
+      try {
+        if (localStorage.getItem("theme")) return;
+      } catch {
+        /* ignore */
+      }
+      setTheme(media.matches ? "dark" : "light");
+    };
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
   useEffect(() => {
     const onPrompt = (event) => {
@@ -233,9 +301,8 @@ function App() {
 
   useEffect(() => {
     const closeStation = ({ target }) => {
-      if (drag.current.moved) return;
       if (target.closest?.(".circle") || target.closest?.(".stationCard")) return;
-      setSelectedStationId(null);
+      closeStationCard();
     };
 
     window.addEventListener("click", closeStation);
@@ -375,12 +442,20 @@ function App() {
     const onPointerDown = (event) => {
       if (event.button !== 0 && event.pointerType === "mouse") return;
 
+      // Station taps are handled by the station button itself.
+      if (event.target?.closest?.(".circle")) return;
+
       animToken.current += 1;
       activePointers.set(event.pointerId, {
         clientX: event.clientX,
         clientY: event.clientY,
       });
-      box.setPointerCapture?.(event.pointerId);
+
+      try {
+        box.setPointerCapture?.(event.pointerId);
+      } catch {
+        /* ignore */
+      }
 
       if (activePointers.size >= 2) {
         beginPinch();
@@ -394,8 +469,8 @@ function App() {
         startY: event.clientY,
         scrollLeft: box.scrollLeft,
         scrollTop: box.scrollTop,
+        stationId: null,
       };
-      setDragging(true);
     };
 
     const onPointerMove = (event) => {
@@ -424,7 +499,14 @@ function App() {
 
       const dx = event.clientX - drag.current.startX;
       const dy = event.clientY - drag.current.startY;
-      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) drag.current.moved = true;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        if (!drag.current.moved) {
+          drag.current.moved = true;
+          setDragging(true);
+        }
+      }
+      if (!drag.current.moved) return;
+
       box.scrollLeft = drag.current.scrollLeft - dx;
       box.scrollTop = drag.current.scrollTop - dy;
     };
@@ -453,6 +535,7 @@ function App() {
           startY: remaining.clientY,
           scrollLeft: box.scrollLeft,
           scrollTop: box.scrollTop,
+          stationId: null,
         };
         setDragging(true);
         return;
@@ -510,8 +593,12 @@ function App() {
         .map((station) => [station.id, station])
     ).values()
   );
-  const selectedStation =
-    displayStations.find((station) => station.id === selectedStationId) || null;
+  const stationCardId =
+    stationCardUi === "closed"
+      ? null
+      : selectedStationId ?? stationCardIdRef.current;
+  const stationCardStation =
+    displayStations.find((station) => station.id === stationCardId) || null;
 
   return (
     <div className="page">
@@ -528,8 +615,9 @@ function App() {
 
       <section className="mapBox">
         <div className="mapBoxTop">
-          <div className="mapBoxTopStart">
-            <strong className="mapTitle">نقشه مترو</strong>
+          <strong className="mapTitle">نقشه مترو</strong>
+
+          <div className="mapBoxTopActions">
             <a
               className="githubStar"
               href="https://github.com/amirabbas-gh/tehran-metro"
@@ -551,12 +639,14 @@ function App() {
               </svg>
               <span>Star</span>
             </a>
+
             {installPrompt && installUi === "chip" ? (
               <button
                 type="button"
                 className="installChip"
                 onClick={runInstall}
                 title="نصب اپلیکیشن"
+                aria-label="نصب اپلیکیشن"
               >
                 <img src="/icon-192.png" alt="" width="14" height="14" />
                 <span>نصب</span>
@@ -564,22 +654,65 @@ function App() {
             ) : null}
           </div>
 
-          <div className="zoomControls">
+          <div className="mapBoxTopTools">
             <button
               type="button"
-              onClick={() => animateToZoom(zoomRef.current + 0.25)}
-              aria-label="بزرگ‌نمایی"
+              className="themeToggle"
+              onClick={() =>
+                setTheme((current) => (current === "dark" ? "light" : "dark"))
+              }
+              aria-label={theme === "dark" ? "حالت روشن" : "حالت تاریک"}
+              title={theme === "dark" ? "حالت روشن" : "حالت تاریک"}
             >
-              +
+              {theme === "dark" ? (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+                </svg>
+              )}
             </button>
-            <span>{Math.round(zoom * 100)}٪</span>
-            <button
-              type="button"
-              onClick={() => animateToZoom(zoomRef.current - 0.25)}
-              aria-label="کوچک‌نمایی"
-            >
-              −
-            </button>
+
+            <div className="zoomControls">
+              <button
+                type="button"
+                onClick={() => animateToZoom(zoomRef.current + 0.25)}
+                aria-label="بزرگ‌نمایی"
+              >
+                +
+              </button>
+              <span>{Math.round(zoom * 100)}٪</span>
+              <button
+                type="button"
+                onClick={() => animateToZoom(zoomRef.current - 0.25)}
+                aria-label="کوچک‌نمایی"
+              >
+                −
+              </button>
+            </div>
           </div>
         </div>
 
@@ -647,47 +780,57 @@ function App() {
                     !station.lines.some((line) => line.id === focusedLine);
 
                 return (
-                  <div
+                  <button
+                    type="button"
                     key={station.id}
+                    data-station-id={station.id}
+                    aria-label={stationLabel(station)}
                     style={{
                       left: station.x,
                       top: station.y,
-                      backgroundColor: "#fff",
                       borderColor: station.intersection
-                        ? "#222"
+                        ? undefined
                         : station.timing_lines[0]?.data.color,
                       opacity: dimmed ? 0.15 : 1,
                     }}
                     className={`station${station.id} circle ${
                       station.intersection ? "intersection" : ""
-                    } ${selectedStationId === station.id ? "active" : ""}`}
-                    onClick={() => {
-                      if (drag.current.moved) return;
-                      setSelectedStationId((current) =>
-                        current === station.id ? null : station.id
-                      );
+                    } ${stationCardId === station.id ? "active" : ""}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      if (selectedStationId === station.id) {
+                        closeStationCard();
+                        return;
+                      }
+                      openStationCard(station.id);
                     }}
                   >
                     <span>{stationLabel(station)}</span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
           </div>
         </div>
 
-        {selectedStation ? (
-          <aside className="stationCard" aria-live="polite">
+        {stationCardStation ? (
+          <aside
+            className={`stationCard${stationCardUi === "leaving" ? " isLeaving" : ""}`}
+            aria-live="polite"
+            onAnimationEnd={() => {
+              if (stationCardUi === "leaving") setStationCardUi("closed");
+            }}
+          >
             <div className="stationCardHead">
               <div className="title">
-                <strong>{stationLabel(selectedStation)}</strong>
-                <small>{selectedStation.name}</small>
+                <strong>{stationLabel(stationCardStation)}</strong>
+                <small>{stationCardStation.name}</small>
               </div>
               <button
                 type="button"
                 className="stationCardClose"
                 aria-label="بستن"
-                onClick={() => setSelectedStationId(null)}
+                onClick={closeStationCard}
               >
                 <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
                   <path
@@ -697,26 +840,32 @@ function App() {
                 </svg>
               </button>
             </div>
-            <div className="lines">
-              {selectedStation.timing_lines.map((line) => (
-                <b key={line.id} style={{ backgroundColor: line.data.color }}>
+
+            <div className="stationCardLines">
+              {stationCardStation.timing_lines.map((line) => (
+                <b
+                  key={line.id}
+                  className="stationCardLine"
+                  style={{ backgroundColor: line.data.color }}
+                >
                   {line.data.title} · {stationLabel(line.start.data)} ←{" "}
                   {stationLabel(line.end.data)}
                 </b>
               ))}
             </div>
+
             <button
               type="button"
               className="stationCardGo"
               onClick={() => {
                 setGoRequest({
-                  destinationId: selectedStation.id,
+                  destinationId: stationCardStation.id,
                   token: Date.now(),
                 });
-                setSelectedStationId(null);
+                closeStationCard();
               }}
             >
-              <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
                 <path
                   fill="currentColor"
                   d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"

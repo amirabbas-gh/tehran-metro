@@ -2,6 +2,98 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light;
+  --bg-page: #f3f4f6;
+  --bg-surface: #ffffff;
+  --bg-muted: #f7f8fa;
+  --bg-hover: #eef0f3;
+  --bg-map: #f8f9fb;
+  --bg-chrome: rgba(255, 255, 255, 0.94);
+  --bg-banner: rgba(255, 255, 255, 0.96);
+  --bg-input: #fafafa;
+  --bg-card: #1c1c1c;
+  --text: #1a1a1a;
+  --text-secondary: #6b6b6b;
+  --text-muted: #8a8a8a;
+  --text-card: #ffffff;
+  --text-card-muted: #9a9a9a;
+  --border: #e4e6ea;
+  --border-strong: #c8ccd2;
+  --border-soft: #eee;
+  --border-card: #333;
+  --shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  --shadow-elevated: 0 10px 28px rgba(0, 0, 0, 0.12);
+  --shadow-sheet: 0 12px 40px rgba(0, 0, 0, 0.14);
+  --accent: #ffcc00;
+  --accent-hover: #ffd633;
+  --accent-text: #141414;
+  --success: #1f7a3f;
+  --danger: #c0392b;
+  --cta: #1a1a1a;
+  --cta-text: #ffffff;
+  --cta-hover: #2a2a2a;
+  --station-fill: #ffffff;
+  --station-intersect: #222222;
+  --rail-transfer: #333333;
+  --handle: #d0d0d0;
+  --focus-ring: rgba(26, 26, 26, 0.22);
+  --github: #24292f;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --theme-meta: #f3f4f6;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-page: #1c1d21;
+  --bg-surface: #26272c;
+  --bg-muted: #30323a;
+  --bg-hover: #3a3c45;
+  --bg-map: #22242a;
+  --bg-chrome: rgba(38, 39, 44, 0.94);
+  --bg-banner: rgba(38, 39, 44, 0.97);
+  --bg-input: #2c2e35;
+  --bg-card: #2f3138;
+  --text: #eef0f3;
+  --text-secondary: #b6b9c2;
+  --text-muted: #8e929c;
+  --text-card: #eef0f3;
+  --text-card-muted: #a9adb6;
+  --border: #3c3e47;
+  --border-strong: #50535e;
+  --border-soft: #33353d;
+  --border-card: #484b55;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  --shadow-elevated: 0 12px 32px rgba(0, 0, 0, 0.32);
+  --shadow-sheet: 0 10px 36px rgba(0, 0, 0, 0.38);
+  --accent: #efc020;
+  --accent-hover: #f5cb3d;
+  --accent-text: #1a1a1a;
+  --success: #62c48a;
+  --danger: #e57a6c;
+  --cta: #efc020;
+  --cta-text: #1a1a1a;
+  --cta-hover: #f5cb3d;
+  --station-fill: #2c2e35;
+  --station-intersect: #eef0f3;
+  --rail-transfer: #c8ccd4;
+  --handle: #5a5d68;
+  --focus-ring: rgba(239, 192, 32, 0.4);
+  --github: #e8eaed;
+  --theme-meta: #1c1d21;
+}
+
+/* No color fade when switching light/dark */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
 html,
 body,
 #root {
@@ -13,14 +105,21 @@ body,
 }
 
 body {
-  background: #f5f5f5;
-  color: #222;
+  background: var(--bg-page);
+  color: var(--text);
   font-family: "Vazirmatn", Tahoma, sans-serif;
 }
 
 button,
 input {
   font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .page {
@@ -42,9 +141,10 @@ input {
   padding: 12px;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ddd;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
@@ -80,7 +180,7 @@ input {
 .searchHeader span {
   display: block;
   margin-top: 4px;
-  color: #777;
+  color: var(--text-secondary);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -88,6 +188,10 @@ input {
 .searchInputs {
   display: grid;
   flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  overflow: hidden;
 }
 
 .searchInput {
@@ -95,7 +199,7 @@ input {
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border);
 }
 
 .searchInput:last-child {
@@ -116,7 +220,12 @@ input {
   border: 0;
   outline: 0;
   background: transparent;
+  color: var(--text);
   font-size: 13px;
+}
+
+.searchInput input::placeholder {
+  color: var(--text-muted);
 }
 
 .originLocateBtn {
@@ -127,16 +236,18 @@ input {
   padding: 0;
   display: grid;
   place-items: center;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  color: #333;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .originLocateBtn:hover {
-  background: #f3f3f3;
-  color: #111;
+  background: var(--bg-hover);
+  color: var(--text);
+  border-color: var(--border-strong);
 }
 
 .originLocateBtn:disabled {
@@ -145,14 +256,14 @@ input {
 }
 
 .originLocateBtn.isLoading {
-  color: #2b8a3e;
+  color: var(--success);
 }
 
 .originLocateSpinner {
   width: 12px;
   height: 12px;
-  border: 2px solid #c6e6cc;
-  border-top-color: #2b8a3e;
+  border: 2px solid color-mix(in srgb, var(--success) 28%, transparent);
+  border-top-color: var(--success);
   border-radius: 50%;
   animation: originLocateSpin 0.7s linear infinite;
 }
@@ -170,8 +281,9 @@ input {
   margin-top: 8px;
   padding: 4px;
   overflow: auto;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
   display: none;
   flex: 0 0 auto;
 }
@@ -186,14 +298,16 @@ input {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  color: #444;
+  border-radius: 6px;
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 12px;
   font-weight: 400;
 }
 
 .autofill > strong:hover {
-  background: #f3f3f3;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 .autofill > strong > span {
@@ -203,7 +317,7 @@ input {
 }
 
 .autofill > strong small {
-  color: #999;
+  color: var(--text-muted);
   direction: ltr;
   font-size: 10px;
 }
@@ -246,14 +360,19 @@ input {
 
 .clearRoute {
   padding: 4px 8px;
-  border: 1px solid #ddd;
-  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 11px;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .clearRoute:hover {
-  background: #f3f3f3;
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text);
 }
 
 .sidebarPanel {
@@ -264,7 +383,7 @@ input {
   flex: 1;
   flex-direction: column;
   overflow: hidden;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-soft);
 }
 
 .lineList {
@@ -286,17 +405,19 @@ input {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  border: 1px solid #e8e8e8;
-  background: #fafafa;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-muted);
   color: inherit;
   cursor: pointer;
   text-align: right;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .lineList button:hover,
 .lineList button.active {
-  border-color: #bbb;
-  background: #f0f0f0;
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
 }
 
 .lineList button b {
@@ -304,6 +425,7 @@ input {
   height: 10px;
   margin-top: 3px;
   flex: 0 0 auto;
+  border-radius: 2px;
 }
 
 .lineList button span {
@@ -320,7 +442,7 @@ input {
 }
 
 .lineList button small {
-  color: #777;
+  color: var(--text-secondary);
   font-size: 11px;
   line-height: 1.4;
 }
@@ -333,9 +455,10 @@ input {
 
 .routeMeta span {
   padding: 3px 8px;
-  border: 1px solid #e6e6e6;
-  background: #f7f7f7;
-  color: #666;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
   font-size: 11px;
 }
 
@@ -384,7 +507,7 @@ input {
   margin-top: 8px;
   border: 2px solid var(--route-color, #ccc);
   border-radius: 50%;
-  background: #fff;
+  background: var(--bg-surface);
 }
 
 .routeStep.start .routeRail i,
@@ -399,8 +522,8 @@ input {
   width: 12px;
   height: 12px;
   margin-top: 6px;
-  border: 2.5px solid #333;
-  background: #fff;
+  border: 2.5px solid var(--rail-transfer);
+  background: var(--bg-surface);
 }
 
 .routeContent {
@@ -411,7 +534,7 @@ input {
 }
 
 .routeContent strong {
-  color: #777;
+  color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
 }
@@ -419,27 +542,27 @@ input {
 .routeStep.start .routeContent strong,
 .routeStep.end .routeContent strong,
 .routeStep.transfer .routeContent strong {
-  color: #1f1f1f;
+  color: var(--text);
   font-size: 13px;
   font-weight: 700;
 }
 
 .routeContent em {
-  color: #888;
+  color: var(--text-muted);
   font-size: 10px;
   font-style: normal;
 }
 
 .routeStep.start .routeContent em {
-  color: #1f7a3f;
+  color: var(--success);
 }
 
 .routeStep.end .routeContent em {
-  color: #c0392b;
+  color: var(--danger);
 }
 
 .routeStep.transfer .routeContent em {
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .mapBox {
@@ -449,44 +572,60 @@ input {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #ddd;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow);
 }
 
 .mapBoxTop {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  flex: 0 0 auto;
-  border-bottom: 1px solid #eee;
-}
-
-.mapBoxTopStart {
+  padding: 8px 10px;
   display: flex;
   align-items: center;
   gap: 8px;
-  min-width: 0;
+  flex: 0 0 auto;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .mapTitle {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: 13px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapBoxTopActions,
+.mapBoxTopTools {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.mapBoxTopActions {
+  margin-inline-start: auto;
+}
+
+.mapBoxTopTools {
+  gap: 6px;
 }
 
 .githubStar {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   flex: 0 0 auto;
-  min-height: 28px;
-  padding: 0 9px;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  background: #f7f7f7;
-  color: #24292f;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--github);
   text-decoration: none;
   font-size: 11px;
   font-weight: 600;
@@ -495,12 +634,39 @@ input {
 }
 
 .githubStar:hover {
-  background: #fff;
-  border-color: #bbb;
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
 }
 
 .githubStar svg {
   display: block;
+  flex: 0 0 auto;
+}
+
+.themeToggle {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.themeToggle:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+
+.themeToggle svg {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 .installBanner {
@@ -513,10 +679,11 @@ input {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-banner);
+  box-shadow: var(--shadow-elevated);
+  backdrop-filter: blur(10px);
   transform: translateX(-50%);
   animation: installIn 0.28s ease;
 }
@@ -571,7 +738,7 @@ input {
 
 .installBannerText span {
   font-size: 11px;
-  color: #666;
+  color: var(--text-secondary);
   line-height: 1.3;
 }
 
@@ -584,16 +751,17 @@ input {
   min-height: 34px;
   padding: 0 14px;
   border: none;
-  border-radius: 999px;
-  background: #ffcc00;
-  color: #141414;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-text);
   cursor: pointer;
   font-size: 12px;
   font-weight: 700;
+  transition: background 0.15s ease;
 }
 
 .installBannerGo:hover {
-  background: #ffd633;
+  background: var(--accent-hover);
 }
 
 .installBannerClose {
@@ -601,17 +769,18 @@ input {
   height: 28px;
   padding: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: #888;
+  color: var(--text-muted);
   cursor: pointer;
   font-size: 18px;
   line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .installBannerClose:hover {
-  background: #f0f0f0;
-  color: #333;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 .installLater {
@@ -625,19 +794,22 @@ input {
 .installChip {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   flex: 0 0 auto;
-  min-height: 28px;
-  padding: 0 9px;
-  border: 1px solid #ddd;
-  border-radius: 999px;
-  background: #f7f7f7;
-  color: #24292f;
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text);
   cursor: pointer;
   font-size: 11px;
   font-weight: 600;
   line-height: 1;
   animation: chipIn 0.22s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .installChip img {
@@ -648,8 +820,8 @@ input {
 }
 
 .installChip:hover {
-  background: #fff;
-  border-color: #bbb;
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
 }
 
 @keyframes chipIn {
@@ -669,24 +841,30 @@ input {
 }
 
 .zoomControls button {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text);
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .zoomControls button:hover {
-  background: #f3f3f3;
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
 }
 
 .zoomControls span {
-  min-width: 42px;
+  min-width: 38px;
   text-align: center;
-  font-size: 12px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
 .graphInfo {
@@ -696,10 +874,11 @@ input {
   z-index: 40;
   width: min(220px, calc(100vw - 40px));
   padding: 12px 14px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--bg-banner);
   backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
   pointer-events: none;
 }
 
@@ -725,14 +904,14 @@ input {
 }
 
 .graphInfo dt {
-  color: #888;
+  color: var(--text-muted);
   font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 11px;
 }
 
 .graphInfo dd {
   margin: 0;
-  color: #333;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
@@ -741,7 +920,7 @@ input {
   flex: 1;
   overflow: auto;
   padding: 16px;
-  background: #fcfcfc;
+  background: var(--bg-map);
   cursor: grab;
   user-select: none;
   -webkit-overflow-scrolling: touch;
@@ -775,6 +954,7 @@ input {
   inset: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
 }
 
 #map path {
@@ -786,22 +966,33 @@ input {
 .circle {
   position: absolute;
   z-index: 10;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
   padding: 0;
   border: 2px solid;
   border-radius: 50%;
-  background: #fff;
+  background: var(--station-fill);
+  color: inherit;
+  appearance: none;
   cursor: pointer;
   transform: translate(-50%, -50%) scale(calc(1 / var(--map-zoom, 1)));
   transform-origin: center;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.circle::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
 }
 
 .circle.intersection {
-  width: 17px;
-  height: 17px;
-  border-color: #222;
+  width: 18px;
+  height: 18px;
+  border-color: var(--station-intersect);
 }
 
 .circle > span {
@@ -810,9 +1001,12 @@ input {
   left: 50%;
   width: max-content;
   max-width: 140px;
-  padding: 3px 5px;
-  border: 1px solid #ddd;
-  background: #fff;
+  padding: 3px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
   font-size: 11px;
   opacity: 0;
   pointer-events: none;
@@ -823,11 +1017,20 @@ input {
 .circle:hover,
 .circle.active {
   z-index: 40;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
-.circle:hover > span,
-.circle.active > span {
+.circle:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.circle:hover > span {
   opacity: 1;
+}
+
+.circle.active > span {
+  opacity: 0;
 }
 
 .dataBox {
@@ -837,37 +1040,58 @@ input {
 .stationCard {
   position: absolute;
   z-index: 100;
-  left: 50%;
-  bottom: 22px;
-  width: min(320px, calc(100% - 24px));
-  padding: 14px;
-  border: 1px solid #333;
-  border-radius: 16px;
-  background: #1c1c1c;
-  color: #fff;
-  transform: translateX(-50%);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+  left: 16px;
+  right: auto;
+  bottom: 16px;
+  top: auto;
+  width: min(300px, calc(100% - 32px));
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-chrome);
+  color: var(--text);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-elevated);
+  transform: none;
   animation: stationCardIn 0.22s ease;
+}
+
+.stationCard.isLeaving {
+  animation: stationCardOut 0.2s ease forwards;
+  pointer-events: none;
 }
 
 @keyframes stationCardIn {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(8px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes stationCardOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
 
 .stationCardHead {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding-bottom: 10px;
-  margin-bottom: 0;
-  border-bottom: 1px solid #3a3a3a;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 .stationCard .title {
@@ -876,6 +1100,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-top: 1px;
 }
 
 .stationCard .title strong {
@@ -885,7 +1110,7 @@ input {
 }
 
 .stationCard .title small {
-  color: #9a9a9a;
+  color: var(--text-muted);
   direction: ltr;
   font-size: 11px;
   line-height: 1.3;
@@ -895,13 +1120,15 @@ input {
   width: 28px;
   height: 28px;
   flex: 0 0 auto;
+  margin-top: -2px;
+  margin-inline-end: -2px;
   padding: 0;
   display: grid;
   place-items: center;
-  border: 1px solid #3f3f3f;
+  border: 1px solid transparent;
   border-radius: 8px;
-  background: #2a2a2a;
-  color: #b0b0b0;
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
   transition:
     background 0.15s ease,
@@ -910,49 +1137,49 @@ input {
 }
 
 .stationCardClose:hover {
-  background: #333;
-  border-color: #555;
-  color: #fff;
+  background: var(--bg-hover);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 .stationCardClose:active {
-  background: #3a3a3a;
+  background: var(--bg-muted);
 }
 
 .stationCardClose svg {
   display: block;
 }
 
-.stationCard .lines {
-  padding: 10px 0;
+.stationCardLines {
   display: grid;
   gap: 6px;
 }
 
-.stationCard .lines b {
+.stationCardLine {
   display: block;
-  padding: 6px 8px;
+  padding: 7px 9px;
   border-radius: 8px;
   color: #fff;
   font-size: 11px;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 1.45;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
 }
 
 .stationCardGo {
   width: 100%;
-  min-height: 34px;
-  padding: 0 10px;
+  min-height: 38px;
+  padding: 0 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   border: none;
-  border-radius: 9px;
-  background: #ffcc00;
-  color: #141414;
+  border-radius: 10px;
+  background: var(--cta);
+  color: var(--cta-text);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: -0.01em;
   transition:
@@ -961,7 +1188,7 @@ input {
 }
 
 .stationCardGo:hover {
-  background: #ffd633;
+  background: var(--cta-hover);
 }
 
 .stationCardGo:active {
@@ -970,30 +1197,30 @@ input {
 
 .stationCardGo svg {
   flex: 0 0 auto;
-  width: 14px;
-  height: 14px;
-  opacity: 0.85;
+  width: 15px;
+  height: 15px;
+  opacity: 0.9;
 }
 
 .originAssist {
   margin-top: 10px;
   padding: 10px;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: #f8f8f8;
+  background: var(--bg-muted);
   display: grid;
   gap: 8px;
 }
 
 .originAssist p {
   margin: 0;
-  color: #444;
+  color: var(--text-secondary);
   font-size: 12px;
   line-height: 1.6;
 }
 
 .originAssist p strong {
-  color: #111;
+  color: var(--text);
   font-weight: 700;
 }
 
@@ -1005,16 +1232,21 @@ input {
 .originAssistPrimary,
 .originAssistSecondary {
   min-height: 38px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 12px;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
 .originAssistPrimary {
   border: none;
-  background: #222;
-  color: #fff;
+  background: var(--cta);
+  color: var(--cta-text);
   font-weight: 700;
+}
+
+.originAssistPrimary:hover {
+  background: var(--cta-hover);
 }
 
 .originAssistPrimary:disabled {
@@ -1023,19 +1255,24 @@ input {
 }
 
 .originAssistSecondary {
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #333;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+}
+
+.originAssistSecondary:hover {
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 .originAssistHint {
-  color: #777;
+  color: var(--text-secondary);
   font-size: 11px;
   line-height: 1.55;
 }
 
 .originAssistHint.isError {
-  color: #c92a2a;
+  color: var(--danger);
 }
 
 @media (min-width: 900px) {
@@ -1080,26 +1317,57 @@ input {
     right: var(--sheet-inset);
     z-index: 30;
     padding: 8px 10px;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.94);
+    background: var(--bg-chrome);
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow);
   }
 
   .mapTitle {
     font-size: 12px;
+    max-width: 68px;
+  }
+
+  .mapBoxTopActions,
+  .mapBoxTopTools {
+    gap: 5px;
+  }
+
+  .mapBoxTopTools {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .themeToggle,
+  .githubStar,
+  .installChip,
+  .zoomControls button {
+    height: 30px;
+    min-height: 30px;
+  }
+
+  .themeToggle,
+  .zoomControls button {
+    width: 30px;
   }
 
   .githubStar {
-    min-height: 30px;
-    padding: 0 10px;
-    font-size: 11px;
+    width: 30px;
+    padding: 0;
+  }
+
+  .githubStar span {
+    display: none;
   }
 
   .installChip {
-    min-height: 30px;
-    padding: 0 10px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .zoomControls span {
+    min-width: 34px;
     font-size: 11px;
   }
 
@@ -1109,11 +1377,11 @@ input {
     max-width: calc(100vw - (var(--sheet-inset) * 2));
     padding: 6px 6px 6px 8px;
     gap: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--bg-banner);
     backdrop-filter: blur(12px);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-elevated);
   }
 
   .installBanner img {
@@ -1136,28 +1404,28 @@ input {
     display: block;
     font-size: 12px;
     font-weight: 500;
-    color: #333;
+    color: var(--text);
     white-space: nowrap;
   }
 
   .installBannerGo {
     min-height: 28px;
     padding: 0 12px;
-    background: #141414;
-    color: #fff;
+    background: var(--cta);
+    color: var(--cta-text);
     font-size: 11px;
     font-weight: 600;
   }
 
   .installBannerGo:hover {
-    background: #2a2a2a;
+    background: var(--cta-hover);
   }
 
   .installBannerClose {
     width: auto;
     min-height: 28px;
     padding: 0 8px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: transparent;
     font-size: 11px;
     font-weight: 500;
@@ -1165,7 +1433,7 @@ input {
 
   .installBannerClose:hover {
     background: transparent;
-    color: #333;
+    color: var(--text);
   }
 
   .installLater {
@@ -1174,12 +1442,6 @@ input {
 
   .installX {
     display: none;
-  }
-
-  .zoomControls button {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
   }
 
   .mapViewport {
@@ -1201,7 +1463,9 @@ input {
     padding: 0 var(--sheet-pad) calc(var(--sheet-pad) + var(--safe-bottom));
     gap: 0;
     border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+    border: 1px solid var(--border);
+    border-bottom: 0;
+    box-shadow: var(--shadow-sheet);
     overflow: hidden;
   }
 
@@ -1223,8 +1487,8 @@ input {
   .sheetHandle span {
     width: 40px;
     height: 4px;
-    border-radius: 999px;
-    background: #d4d4d4;
+    border-radius: var(--radius-pill);
+    background: var(--handle);
   }
 
   .sheetChrome {
@@ -1261,20 +1525,26 @@ input {
     justify-content: center;
     min-height: 30px;
     padding: 0 12px;
-    border: 1px solid #e4e4e4;
-    border-radius: 999px;
-    background: #f6f6f6;
-    color: #444;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--bg-muted);
+    color: var(--text-secondary);
     cursor: pointer;
     font-size: 11px;
     white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .sheetToggle:hover {
+    background: var(--bg-hover);
+    color: var(--text);
   }
 
   .searchInputs {
-    border: 1px solid #ececec;
-    border-radius: 12px;
-    background: #fafafa;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-input);
     overflow: hidden;
   }
 
@@ -1489,10 +1759,14 @@ input {
     bottom: auto;
     width: auto;
     max-width: none;
-    transform: none;
     padding: 14px;
+    gap: 12px;
     border-radius: 16px;
     animation: stationCardInMobile 0.22s ease;
+  }
+
+  .stationCard.isLeaving {
+    animation: stationCardOutMobile 0.2s ease forwards;
   }
 
   @keyframes stationCardInMobile {
@@ -1506,32 +1780,35 @@ input {
     }
   }
 
-  .stationCard .title strong {
-    font-size: 14px;
+  @keyframes stationCardOutMobile {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
   }
 
-  .stationCard .title small {
-    font-size: 11px;
+  .stationCard .title strong {
+    font-size: 15px;
   }
 
   .stationCardClose {
     width: 30px;
     height: 30px;
-    border-radius: 8px;
   }
 
-  .stationCard .lines b {
-    padding: 7px 9px;
-    border-radius: 8px;
+  .stationCardLine {
+    padding: 8px 10px;
     font-size: 12px;
-    line-height: 1.45;
   }
 
   .stationCardGo {
-    min-height: 36px;
-    border-radius: 10px;
-    font-size: 12px;
-    gap: 6px;
+    min-height: 42px;
+    border-radius: 11px;
+    font-size: 13px;
   }
 
   .originAssist {
