@@ -457,6 +457,164 @@ input {
   display: block;
 }
 
+.installBanner {
+  position: fixed;
+  left: 50%;
+  bottom: 52px;
+  z-index: 60;
+  width: min(380px, calc(100vw - 24px));
+  padding: 10px 10px 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
+  transform: translateX(-50%);
+  animation: installIn 0.28s ease;
+}
+
+.installBanner.isLeaving {
+  animation: installOut 0.28s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes installIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes installOut {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(14px);
+  }
+}
+
+.installBanner img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex: 0 0 auto;
+}
+
+.installBannerText {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.installBannerText strong {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.installBannerText span {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.3;
+}
+
+.installShort {
+  display: none;
+}
+
+.installBannerGo {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: #ffcc00;
+  color: #141414;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.installBannerGo:hover {
+  background: #ffd633;
+}
+
+.installBannerClose {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.installBannerClose:hover {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.installLater {
+  display: none;
+}
+
+.installX {
+  display: block;
+}
+
+.installChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  background: #f7f7f7;
+  color: #24292f;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  animation: chipIn 0.22s ease;
+}
+
+.installChip img {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: block;
+}
+
+.installChip:hover {
+  background: #fff;
+  border-color: #bbb;
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .zoomControls {
   display: flex;
   align-items: center;
@@ -750,6 +908,85 @@ input {
     min-height: 30px;
     padding: 0 10px;
     font-size: 11px;
+  }
+
+  .installChip {
+    min-height: 30px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .installBanner {
+    bottom: calc(188px + var(--sheet-inset) + var(--safe-bottom) + 12px);
+    width: max-content;
+    max-width: calc(100vw - (var(--sheet-inset) * 2));
+    padding: 6px 6px 6px 8px;
+    gap: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .installBanner img {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .installBannerText {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .installBannerText strong,
+  .installDesc {
+    display: none;
+  }
+
+  .installShort {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+  }
+
+  .installBannerGo {
+    min-height: 28px;
+    padding: 0 12px;
+    background: #141414;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .installBannerGo:hover {
+    background: #2a2a2a;
+  }
+
+  .installBannerClose {
+    width: auto;
+    min-height: 28px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .installBannerClose:hover {
+    background: transparent;
+    color: #333;
+  }
+
+  .installLater {
+    display: block;
+  }
+
+  .installX {
+    display: none;
   }
 
   .zoomControls button {

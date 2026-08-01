@@ -87,6 +87,29 @@ function App() {
   const [routeStationIds, setRouteStationIds] = useState([]);
   const [lines, setLines] = useState([]);
   const [selectedStationId, setSelectedStationId] = useState(null);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [installUi, setInstallUi] = useState("banner"); // banner | leaving | chip
+
+  useEffect(() => {
+    const onPrompt = (event) => {
+      event.preventDefault();
+      setInstallPrompt(event);
+      setInstallUi("banner");
+    };
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", () => {
+      setInstallPrompt(null);
+      setInstallUi("banner");
+    });
+    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
+  }, []);
+
+  async function runInstall() {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
+  }
 
   const bounds = useMemo(
     () => ({
@@ -507,6 +530,17 @@ function App() {
               </svg>
               <span>Star</span>
             </a>
+            {installPrompt && installUi === "chip" ? (
+              <button
+                type="button"
+                className="installChip"
+                onClick={runInstall}
+                title="نصب اپلیکیشن"
+              >
+                <img src="/icon-192.png" alt="" width="14" height="14" />
+                <span>نصب</span>
+              </button>
+            ) : null}
           </div>
 
           <div className="zoomControls">
@@ -681,6 +715,38 @@ function App() {
             </div>
           </dl>
         </aside>
+      ) : null}
+
+      {installPrompt && (installUi === "banner" || installUi === "leaving") ? (
+        <div
+          className={`installBanner${installUi === "leaving" ? " isLeaving" : ""}`}
+          role="dialog"
+          aria-label="نصب اپلیکیشن"
+          onAnimationEnd={() => {
+            if (installUi === "leaving") setInstallUi("chip");
+          }}
+        >
+          <img src="/icon-192.png" alt="" width="40" height="40" />
+          <div className="installBannerText">
+            <strong>مترو تهران</strong>
+            <span className="installDesc">نصبش کن؛ آفلاین هم کار می‌کنه</span>
+            <span className="installShort">نصب اپ روی گوشی</span>
+          </div>
+          <button type="button" className="installBannerGo" onClick={runInstall}>
+            نصب
+          </button>
+          <button
+            type="button"
+            className="installBannerClose"
+            aria-label="بستن"
+            onClick={() => setInstallUi("leaving")}
+          >
+            <span className="installLater">بعداً</span>
+            <span className="installX" aria-hidden="true">
+              ×
+            </span>
+          </button>
+        </div>
       ) : null}
     </div>
   );
