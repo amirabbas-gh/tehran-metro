@@ -22,6 +22,12 @@ import {
   computeBounds,
   enrichMetroData,
 } from "./lib/metro-data";
+import {
+  dismissRemoteUpdate,
+  fetchRemoteUpdate,
+  isInstalledPwa,
+  type RemoteUpdateInfo,
+} from "./lib/pwa";
 import { applyTheme, getPreferredTheme, persistTheme } from "./lib/theme";
 import { safeStorageGet } from "./lib/storage";
 import type {
@@ -56,12 +62,18 @@ export default function App(): ReactElement {
     useState<BeforeInstallPromptEvent | null>(null);
   const [installUi, setInstallUi] = useState<InstallUi>("banner");
   const [updateReady, setUpdateReady] = useState(false);
+  const [remoteUpdate, setRemoteUpdate] = useState<RemoteUpdateInfo | null>(
+    null
+  );
   const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
 
   const latestChangelogEntries = useMemo(
     () => parseLatestChangelogEntries(changelogRaw),
     []
   );
+  const showUpdateBanner = updateReady || remoteUpdate !== null;
+  const changelogLead =
+    remoteUpdate?.changelogLead ?? latestChangelogEntries[0];
 
   const bounds = useMemo(() => computeBounds(rawStations), []);
   const width = (bounds.maxLongitude - bounds.minLongitude) * BASE_SCALE + 48;
@@ -129,6 +141,36 @@ export default function App(): ReactElement {
   }, []);
 
   useEffect(() => {
+    if (!isInstalledPwa()) return;
+
+    const controller = new AbortController();
+
+    const checkRemoteChangelog = () => {
+      if (!navigator.onLine) return;
+      void fetchRemoteUpdate(__APP_VERSION__, controller.signal)
+        .then((info) => {
+          if (!controller.signal.aborted) setRemoteUpdate(info);
+        })
+        .catch(() => {
+          /* Offline or GitHub unavailable; skip the banner. */
+        });
+    };
+
+    checkRemoteChangelog();
+    window.addEventListener("online", checkRemoteChangelog);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") checkRemoteChangelog();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      controller.abort();
+      window.removeEventListener("online", checkRemoteChangelog);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!installPrompt || installUi !== "banner") return;
 
     const dismiss = (event: Event) => {
@@ -153,10 +195,26 @@ export default function App(): ReactElement {
   }
 
   function applyUpdate() {
-    void navigator.serviceWorker?.getRegistration().then((registration) => {
+    void (async () => {
       applyingUpdate.current = true;
-      registration?.waiting?.postMessage({ type: "SKIP_WAITING" });
-    });
+      const registration = await navigator.serviceWorker?.getRegistration();
+      if (registration?.waiting) {
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        return;
+      }
+      await registration?.update().catch(() => {});
+      if (registration?.waiting) {
+        registration.waiting.postMessage({ type: "SKIP_WAITING" });
+        return;
+      }
+      window.location.reload();
+    })();
+  }
+
+  function dismissUpdate() {
+    if (remoteUpdate) dismissRemoteUpdate(remoteUpdate.version);
+    setRemoteUpdate(null);
+    setUpdateReady(false);
   }
 
   useEffect(() => {
@@ -252,10 +310,10 @@ export default function App(): ReactElement {
       {graphInfo ? <GraphInfoPanel info={graphInfo} /> : null}
 
       <PwaBanners
-        updateReady={updateReady}
+        updateReady={showUpdateBanner}
         onApplyUpdate={applyUpdate}
-        onDismissUpdate={() => setUpdateReady(false)}
-        changelogLead={latestChangelogEntries[0]}
+        onDismissUpdate={dismissUpdate}
+        changelogLead={changelogLead}
         installPrompt={installPrompt}
         installUi={installUi}
         onInstall={() => {

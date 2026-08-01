@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import { isInstalledPwa } from "./lib/pwa";
 
 const rootEl = document.getElementById("root");
 if (!rootEl) {
@@ -12,13 +13,6 @@ createRoot(rootEl).render(
     <App />
   </StrictMode>
 );
-
-function isInstalledPwa(): boolean {
-  return (
-    window.matchMedia("(display-mode: standalone)").matches ||
-    window.navigator.standalone === true
-  );
-}
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

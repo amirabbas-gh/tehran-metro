@@ -53,4 +53,7 @@ function manifestVersionPlugin(): Plugin {
 
 export default defineConfig({
   plugins: [react(), manifestVersionPlugin()],
+  define: {
+    __APP_VERSION__: JSON.stringify(readPackageVersion()),
+  },
 });
