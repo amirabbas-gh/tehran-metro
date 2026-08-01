@@ -30,7 +30,7 @@ export default function GraphInfoPanel({
         </div>
         <div>
           <dt>Route</dt>
-          <dd>Dijkstra · O((V+E) log V)</dd>
+          <dd>Dijkstra · O((V+E)log V)</dd>
         </div>
         <div>
           <dt>Connected</dt>

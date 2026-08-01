@@ -912,7 +912,8 @@ input:focus-visible {
 .graphInfo dd {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .mapViewport {
