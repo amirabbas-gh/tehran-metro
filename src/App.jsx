@@ -60,13 +60,45 @@ function pointerMidpoint(a, b) {
   };
 }
 
-function getPreferredTheme() {
+// localStorage can throw (private mode, quota, disabled cookies, etc.), so
+// every read/write goes through these two helpers instead of a local try/catch.
+function safeStorageGet(key) {
   try {
-    const saved = localStorage.getItem("theme");
-    if (saved === "light" || saved === "dark") return saved;
+    return localStorage.getItem(key);
   } catch {
-    /* ignore */
+    return null;
   }
+}
+
+function safeStorageSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* Storage unavailable; theme just won't persist. */
+  }
+}
+
+// Pointer capture can throw if the pointer already ended or isn't supported;
+// these wrappers keep call sites free of try/catch noise.
+function setPointerCaptureSafe(element, pointerId) {
+  try {
+    element.setPointerCapture?.(pointerId);
+  } catch {
+    /* Pointer may have already been released; ignore. */
+  }
+}
+
+function releasePointerCaptureSafe(element, pointerId) {
+  try {
+    element.releasePointerCapture?.(pointerId);
+  } catch {
+    /* Capture may already be lost; ignore. */
+  }
+}
+
+function getPreferredTheme() {
+  const saved = safeStorageGet("theme");
+  if (saved === "light" || saved === "dark") return saved;
   return window.matchMedia("(prefers-color-scheme: dark)").matches
     ? "dark"
     : "light";
@@ -114,6 +146,8 @@ function App() {
     scrollTop: 0,
     stationId: null,
   });
+  // After a pinch that started on a station, suppress the synthetic click.
+  const skipStationClick = useRef(false);
   const [zoom, setZoom] = useState(() => initialZoom());
   const [dragging, setDragging] = useState(false);
   const [focusedLine, setFocusedLine] = useState(null);
@@ -141,21 +175,13 @@ function App() {
 
   useLayoutEffect(() => {
     applyTheme(theme);
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {
-      /* ignore */
-    }
+    safeStorageSet("theme", theme);
   }, [theme]);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      try {
-        if (localStorage.getItem("theme")) return;
-      } catch {
-        /* ignore */
-      }
+      if (safeStorageGet("theme")) return;
       setTheme(media.matches ? "dark" : "light");
     };
     media.addEventListener("change", onChange);
@@ -442,11 +468,14 @@ function App() {
       animToken.current += 1;
       stopDrag();
       drag.current.moved = true;
+      skipStationClick.current = true;
       pinch.current = {
         active: true,
         startDistance: Math.max(1, pointerDistance(points[0], points[1])),
         startZoom: zoomRef.current,
       };
+      // Disable station hit-testing so the finger on a .circle stays with the pinch.
+      setDragging(true);
     };
 
     const onWheel = (event) => {
@@ -469,25 +498,28 @@ function App() {
     const onPointerDown = (event) => {
       if (event.button !== 0 && event.pointerType === "mouse") return;
 
-      // Station taps are handled by the station button itself.
-      if (event.target?.closest?.(".circle")) return;
+      const onStation = Boolean(event.target?.closest?.(".circle"));
 
       animToken.current += 1;
+      // Always track the pointer so a finger on a station can still pinch-zoom.
       activePointers.set(event.pointerId, {
         clientX: event.clientX,
         clientY: event.clientY,
       });
 
-      try {
-        box.setPointerCapture?.(event.pointerId);
-      } catch {
-        /* ignore */
-      }
-
       if (activePointers.size >= 2) {
+        for (const id of activePointers.keys()) {
+          setPointerCaptureSafe(box, id);
+        }
         beginPinch();
         return;
       }
+
+      // Single finger on a station: track for a possible pinch, but let the
+      // station button handle the tap (no capture / no pan).
+      if (onStation) return;
+
+      setPointerCaptureSafe(box, event.pointerId);
 
       drag.current = {
         active: true,
@@ -542,11 +574,7 @@ function App() {
       if (!activePointers.has(event.pointerId)) return;
 
       activePointers.delete(event.pointerId);
-      try {
-        box.releasePointerCapture?.(event.pointerId);
-      } catch {
-        /* ignore */
-      }
+      releasePointerCaptureSafe(box, event.pointerId);
 
       if (activePointers.size < 2 && pinch.current.active) {
         pinch.current.active = false;
@@ -569,7 +597,12 @@ function App() {
       }
 
       if (activePointers.size === 0) {
-        stopDrag();
+        drag.current.active = false;
+        setDragging(false);
+        // Clear after the click that follows pointerup has been dispatched.
+        window.setTimeout(() => {
+          skipStationClick.current = false;
+        }, 0);
       }
     };
 
@@ -825,6 +858,10 @@ function App() {
                     } ${stationCardId === station.id ? "active" : ""}`}
                     onClick={(event) => {
                       event.stopPropagation();
+                      if (skipStationClick.current) {
+                        skipStationClick.current = false;
+                        return;
+                      }
                       if (selectedStationId === station.id) {
                         closeStationCard();
                         return;
