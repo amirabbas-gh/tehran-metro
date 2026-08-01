@@ -1,11 +1,32 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { bfsFindPath, buildAdjacencyList } from "./graph";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactElement,
+} from "react";
+import { bfsFindPath, buildAdjacencyList } from "../lib/graph";
+import {
+  findNearestStation,
+  geoErrorMessage,
+  stationLabel,
+} from "../lib/geo";
+import type {
+  AutofillStation,
+  EnrichedLine,
+  EnrichedStation,
+  GoRequest,
+  RouteStep,
+  SearchFocus,
+  StationLineMembership,
+} from "../types/metro";
 
-function stationLabel(station) {
-  return station?.translations?.fa || station?.name || "";
-}
-
-function withLineColors(station, lines) {
+function withLineColors(
+  station: EnrichedStation,
+  lines: EnrichedLine[]
+): AutofillStation {
   return {
     ...station,
     lines: station.lines.map((stationLine) => ({
@@ -15,62 +36,36 @@ function withLineColors(station, lines) {
   };
 }
 
-function haversineKm(lat1, lon1, lat2, lon2) {
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
+export type SearchProps = {
+  lines: EnrichedLine[];
+  focusedLine: number | null;
+  onFocusLine: (lineId: number) => void;
+  onRouteChange: (stationIds: number[]) => void;
+  goRequest: GoRequest | null;
+  onGoRequestHandled: () => void;
+};
 
-function findNearestStation(stations, latitude, longitude) {
-  let best = null;
-  let bestKm = Infinity;
-
-  for (const station of stations) {
-    const lon = station.longtitude ?? station.longitude;
-    if (station.latitude == null || lon == null) continue;
-    const km = haversineKm(latitude, longitude, station.latitude, lon);
-    if (km < bestKm) {
-      bestKm = km;
-      best = station;
-    }
-  }
-
-  return best ? { station: best, km: bestKm } : null;
-}
-
-function geoErrorMessage(error) {
-  if (!error) return "موقعیت شما پیدا نشد.";
-  if (error.code === 1) return "دسترسی به موقعیت رد شد. مبدا را دستی انتخاب کنید.";
-  if (error.code === 2) return "موقعیت در دسترس نیست. مبدا را دستی انتخاب کنید.";
-  if (error.code === 3) return "دریافت موقعیت طول کشید. دوباره تلاش کنید یا دستی انتخاب کنید.";
-  return "موقعیت شما پیدا نشد. مبدا را دستی انتخاب کنید.";
-}
-
-const Search = ({
+export default function Search({
   lines,
   focusedLine,
   onFocusLine,
   onRouteChange,
   goRequest,
   onGoRequestHandled,
-}) => {
+}: SearchProps): ReactElement {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
-  const [autofills, setAutofills] = useState([]);
+  const [autofills, setAutofills] = useState<AutofillStation[]>([]);
   const [autofill, setAutofill] = useState(false);
   const [originId, setOriginId] = useState(0);
   const [destinationId, setDestinationId] = useState(0);
-  const [focus, setFocus] = useState(false);
-  const [way, setWay] = useState([]);
+  const [focus, setFocus] = useState<SearchFocus>(false);
+  const [way, setWay] = useState<ReturnType<typeof bfsFindPath>>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [awaitingOrigin, setAwaitingOrigin] = useState(false);
   const [locating, setLocating] = useState(false);
   const [geoHint, setGeoHint] = useState("");
-  const originInputRef = useRef(null);
+  const originInputRef = useRef<HTMLInputElement>(null);
   const originIdRef = useRef(0);
 
   const stationsById = useMemo(() => buildAdjacencyList(lines), [lines]);
@@ -110,7 +105,7 @@ const Search = ({
 
     const dest = stationsById.get(goRequest.destinationId);
     if (!dest) {
-      onGoRequestHandled?.();
+      onGoRequestHandled();
       return;
     }
 
@@ -134,11 +129,10 @@ const Search = ({
       setAwaitingOrigin(true);
     }
 
-    onGoRequestHandled?.();
+    onGoRequestHandled();
   }, [goRequest, stationsById, onGoRequestHandled]);
 
-  const applyOriginStation = useCallback((station) => {
-    if (!station) return;
+  const applyOriginStation = useCallback((station: EnrichedStation) => {
     setOrigin(stationLabel(station));
     setOriginId(station.id);
     setAwaitingOrigin(false);
@@ -213,13 +207,13 @@ const Search = ({
   }, []);
 
   const fillAutoFill = useCallback(
-    (searchedText, selectedId = 0) => {
+    (searchedText: string, selectedId = 0) => {
       const selected = selectedId ? stationsById.get(selectedId) : null;
       const raw = searchedText.trim();
       const query =
         selected && stationLabel(selected) === raw ? "" : raw.toLowerCase();
       const persianQuery = query ? raw : "";
-      const matches = new Map();
+      const matches = new Map<number, AutofillStation>();
 
       lines.forEach((line) => {
         line.stations.forEach((station) => {
@@ -266,27 +260,30 @@ const Search = ({
     setAwaitingOrigin(false);
     setLocating(false);
     setGeoHint("");
-    onRouteChange?.([]);
+    onRouteChange([]);
   }, [onRouteChange]);
 
   useEffect(() => {
     if (!originId || !destinationId) {
       setWay([]);
-      onRouteChange?.([]);
+      onRouteChange([]);
       return;
     }
 
     const path = bfsFindPath(stationsById, originId, destinationId);
     setWay(path);
-    onRouteChange?.(path.map((station) => station.id));
+    onRouteChange(path.map((station) => station.id));
   }, [originId, destinationId, stationsById, onRouteChange]);
 
   const showRoute = way.length > 0;
 
-  const routeSteps = useMemo(() => {
+  const routeSteps = useMemo((): RouteStep[] => {
     if (!way.length) return [];
 
-    const edgeLine = (from, to) =>
+    const edgeLine = (
+      from: EnrichedStation,
+      to: EnrichedStation
+    ): StationLineMembership | undefined =>
       from.lines.find((line) =>
         to.lines.some(
           (item) =>
@@ -298,8 +295,8 @@ const Search = ({
     return way.map((station, index) => {
       const previous = way[index - 1];
       const next = way[index + 1];
-      const incoming = previous ? edgeLine(previous, station) : null;
-      const outgoing = next ? edgeLine(station, next) : null;
+      const incoming = previous ? edgeLine(previous, station) : undefined;
+      const outgoing = next ? edgeLine(station, next) : undefined;
       const activeLine = incoming || outgoing;
       const segmentColor =
         lines.find((line) => line.id === activeLine?.id)?.color ||
@@ -463,7 +460,9 @@ const Search = ({
                 انتخاب دستی
               </button>
             </div>
-            {geoHint ? <span className="originAssistHint isError">{geoHint}</span> : null}
+            {geoHint ? (
+              <span className="originAssistHint isError">{geoHint}</span>
+            ) : null}
           </div>
         ) : null}
 
@@ -549,7 +548,11 @@ const Search = ({
                         >
                           <div
                             className="routeRail"
-                            style={{ "--route-color": step.segmentColor }}
+                            style={
+                              {
+                                "--route-color": step.segmentColor,
+                              } as CSSProperties
+                            }
                           >
                             <i />
                           </div>
@@ -600,6 +603,4 @@ const Search = ({
       </div>
     </div>
   );
-};
-
-export default Search;
+}
