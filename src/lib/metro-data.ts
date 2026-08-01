@@ -1,3 +1,4 @@
+import { toPersianDigits } from "./format";
 import type {
   EnrichedLine,
   EnrichedStation,
@@ -10,6 +11,7 @@ import type {
 
 export const BASE_SCALE = 1100;
 
+/** Raw ASCII line number extracted from the English source name (e.g. "1"). */
 export function lineNumber(line: Pick<RawLine, "name">): string {
   const match = String(line.name).match(/Line\s+(\d+)/i);
   return match?.[1] ?? "";
@@ -18,7 +20,10 @@ export function lineNumber(line: Pick<RawLine, "name">): string {
 export function lineTitle(line: Pick<RawLine, "name">): string {
   const number = lineNumber(line);
   if (!number) return line.name;
-  return /Branch/i.test(line.name) ? `خط ${number} (شاخه)` : `خط ${number}`;
+  const localizedNumber = toPersianDigits(number);
+  return /Branch/i.test(line.name)
+    ? `خط ${localizedNumber} (شاخه)`
+    : `خط ${localizedNumber}`;
 }
 
 export function computeBounds(stations: RawStation[]): MapBounds {

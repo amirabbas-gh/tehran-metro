@@ -1,0 +1,1751 @@
+{
+  "source": "https://metro.tehran.ir/خدمات-مسافری/برنامه-حركت-قطارها",
+  "sourceNote": "هدوی رسمی شرکت بهره‌برداری مترو تهران (سال ۱۴۰۵) — فاصله زمانی رسیدن قطار بعدی",
+  "avgHopMinutes": 2.5,
+  "transferWalkMinutes": 4,
+  "dayTypes": {
+    "weekday": "شنبه تا چهارشنبه",
+    "thursday": "پنج‌شنبه",
+    "friday": "جمعه و تعطیل"
+  },
+  "lines": {
+    "1": {
+      "officialLine": 1,
+      "name": "خط ۱",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "descending": {
+          "originLabel": "تجریش",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "06:10",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:10",
+              "to": "06:35",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:35",
+              "to": "10:30",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:30",
+              "to": "15:00",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:00",
+              "to": "19:55",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:55",
+              "to": "20:40",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "20:40",
+              "to": "21:20",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "21:20",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:10",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:10",
+              "to": "06:25",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:25",
+              "to": "06:35",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:35",
+              "to": "10:10",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:10",
+              "to": "19:10",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:10",
+              "to": "21:10",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "21:10",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:40",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:40",
+              "to": "07:20",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "07:20",
+              "to": "21:00",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "ascending": {
+          "originLabel": "شهر ری",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "09:40",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:40",
+              "to": "14:10",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "14:10",
+              "to": "19:15",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:15",
+              "to": "19:55",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "19:55",
+              "to": "20:55",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:55",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "09:05",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:05",
+              "to": "18:05",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "18:05",
+              "to": "20:04",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:04",
+              "to": "20:55",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:55",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:30",
+              "to": "20:10",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:10",
+              "to": "20:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "officialLine": 1,
+      "name": "انشعاب کهریزک",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "شهر ری",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "09:40",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:40",
+              "to": "14:10",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "14:10",
+              "to": "19:15",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:15",
+              "to": "19:55",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "19:55",
+              "to": "20:55",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:55",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "09:05",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:05",
+              "to": "18:05",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "18:05",
+              "to": "20:04",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:04",
+              "to": "20:55",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:55",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:30",
+              "to": "20:10",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:10",
+              "to": "20:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "تجریش",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "06:10",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:10",
+              "to": "06:35",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:35",
+              "to": "10:30",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:30",
+              "to": "15:00",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:00",
+              "to": "19:55",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:55",
+              "to": "20:40",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "20:40",
+              "to": "21:20",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "21:20",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:10",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:10",
+              "to": "06:25",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:25",
+              "to": "06:35",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:35",
+              "to": "10:10",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:10",
+              "to": "19:10",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:10",
+              "to": "21:10",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "21:10",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:40",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:40",
+              "to": "07:20",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "07:20",
+              "to": "21:00",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "officialLine": 2,
+      "name": "خط ۲",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "فرهنگسرا",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "06:20",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:20",
+              "to": "06:55",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "06:55",
+              "to": "10:25",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:25",
+              "to": "15:55",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:55",
+              "to": "19:40",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:40",
+              "to": "20:22",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:22",
+              "to": "21:10",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "21:10",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:20",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:20",
+              "to": "06:55",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "06:55",
+              "to": "10:25",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "10:25",
+              "to": "19:40",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:40",
+              "to": "20:20",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "20:20",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:05",
+              "to": "07:35",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "07:35",
+              "to": "20:50",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:50",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "صادقیه",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "05:50",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "05:50",
+              "to": "06:20",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "06:20",
+              "to": "09:50",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:50",
+              "to": "15:20",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:20",
+              "to": "18:50",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "18:50",
+              "to": "19:38",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:38",
+              "to": "20:50",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "20:50",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "05:50",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "05:50",
+              "to": "06:20",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "06:20",
+              "to": "09:50",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:50",
+              "to": "18:44",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "18:44",
+              "to": "20:20",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "20:20",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "07:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "07:30",
+              "to": "20:50",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:50",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "officialLine": 3,
+      "name": "خط ۳",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "آزادگان",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "07:08",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "07:08",
+              "to": "08:18",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "08:18",
+              "to": "09:55",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "09:55",
+              "to": "14:19",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "14:19",
+              "to": "14:54",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "14:54",
+              "to": "19:20",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:20",
+              "to": "19:55",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "19:55",
+              "to": "21:15",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "21:15",
+              "to": "21:45",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:45",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:15",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:15",
+              "to": "20:30",
+              "headwayMinutes": 9
+            },
+            {
+              "from": "20:30",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:30",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:30",
+              "to": "07:30",
+              "headwayMinutes": 12
+            },
+            {
+              "from": "07:30",
+              "to": "19:40",
+              "headwayMinutes": 9
+            },
+            {
+              "from": "19:40",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "قائم",
+          "weekday": [
+            {
+              "from": "05:40",
+              "to": "06:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:00",
+              "to": "06:16",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "06:16",
+              "to": "08:15",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "08:15",
+              "to": "09:30",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:30",
+              "to": "09:51",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "09:51",
+              "to": "14:47",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "14:47",
+              "to": "15:36",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "15:36",
+              "to": "19:58",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:58",
+              "to": "21:50",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "21:50",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:40",
+              "to": "06:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:30",
+              "to": "20:00",
+              "headwayMinutes": 9
+            },
+            {
+              "from": "20:00",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "07:36",
+              "headwayMinutes": 12
+            },
+            {
+              "from": "07:36",
+              "to": "08:36",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "08:36",
+              "to": "19:50",
+              "headwayMinutes": 9
+            },
+            {
+              "from": "19:50",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "5": {
+      "officialLine": 4,
+      "name": "خط ۴",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "علامه جعفری",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "06:02",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "06:02",
+              "to": "06:20",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "06:20",
+              "to": "09:50",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:50",
+              "to": "15:50",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:50",
+              "to": "19:30",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:30",
+              "to": "20:00",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "20:00",
+              "to": "20:40",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "20:40",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "05:40",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "05:40",
+              "to": "06:02",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "06:02",
+              "to": "06:14",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "06:14",
+              "to": "09:13",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:13",
+              "to": "19:07",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:07",
+              "to": "19:30",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "19:30",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "07:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "07:30",
+              "to": "20:00",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "20:00",
+              "to": "21:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "شهید کلاهدوز",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "09:00",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "09:00",
+              "to": "15:00",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "15:00",
+              "to": "19:00",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "19:00",
+              "to": "19:48",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "19:48",
+              "to": "20:20",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "20:20",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "08:30",
+              "headwayMinutes": 5
+            },
+            {
+              "from": "08:30",
+              "to": "18:36",
+              "headwayMinutes": 6
+            },
+            {
+              "from": "18:36",
+              "to": "19:40",
+              "headwayMinutes": 8
+            },
+            {
+              "from": "19:40",
+              "to": "22:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:40",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "06:40",
+              "to": "19:40",
+              "headwayMinutes": 7
+            },
+            {
+              "from": "19:40",
+              "to": "21:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "6": {
+      "officialLine": 4,
+      "name": "انشعاب فرودگاه مهرآباد",
+      "startTime": "05:37",
+      "endTime": "22:00",
+      "fridayStartTime": "06:07",
+      "directions": {
+        "ascending": {
+          "originLabel": "فرودگاه مهرآباد",
+          "weekday": [
+            {
+              "from": "05:45",
+              "to": "22:00",
+              "headwayMinutes": 15
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:45",
+              "to": "22:00",
+              "headwayMinutes": 15
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:15",
+              "to": "22:00",
+              "headwayMinutes": 15
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "بیمه",
+          "weekday": [
+            {
+              "from": "05:37",
+              "to": "21:52",
+              "headwayMinutes": 15
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:37",
+              "to": "21:52",
+              "headwayMinutes": 15
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:07",
+              "to": "21:52",
+              "headwayMinutes": 15
+            }
+          ]
+        }
+      }
+    },
+    "7": {
+      "officialLine": 5,
+      "name": "خط ۵",
+      "startTime": "05:00",
+      "endTime": "22:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "descending": {
+          "originLabel": "تهران (صادقیه)",
+          "weekday": [
+            {
+              "from": "05:20",
+              "to": "05:40",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "05:40",
+              "to": "06:10",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:10",
+              "to": "09:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "09:00",
+              "to": "10:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "10:00",
+              "to": "13:20",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "13:20",
+              "to": "14:50",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "14:50",
+              "to": "20:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:00",
+              "to": "21:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 20
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 30
+            },
+            {
+              "from": "06:00",
+              "to": "06:20",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:20",
+              "to": "09:30",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "09:30",
+              "to": "14:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "14:00",
+              "to": "19:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "19:00",
+              "to": "20:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "20:00",
+              "to": "22:00",
+              "headwayMinutes": 20
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:15",
+              "to": "16:10",
+              "headwayMinutes": 30
+            },
+            {
+              "from": "16:10",
+              "to": "20:30",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "20:30",
+              "to": "22:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "ascending": {
+          "originLabel": "گلشهر",
+          "weekday": [
+            {
+              "from": "05:00",
+              "to": "09:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "09:00",
+              "to": "12:20",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "12:20",
+              "to": "14:05",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "14:05",
+              "to": "18:15",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "18:15",
+              "to": "19:30",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "19:30",
+              "to": "21:30",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "21:30",
+              "to": "22:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:20",
+              "to": "09:00",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "09:00",
+              "to": "13:15",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "13:15",
+              "to": "17:45",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "17:45",
+              "to": "19:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "19:00",
+              "to": "21:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "16:00",
+              "headwayMinutes": 30
+            },
+            {
+              "from": "16:00",
+              "to": "20:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "20:00",
+              "to": "22:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "8": {
+      "officialLine": 6,
+      "name": "خط ۶",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "آرمان علی‌وردی / کوهسار",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "05:45",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "05:45",
+              "to": "09:33",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "09:33",
+              "to": "13:40",
+              "headwayMinutes": 11
+            },
+            {
+              "from": "13:40",
+              "to": "19:55",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "19:55",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:00",
+              "to": "17:55",
+              "headwayMinutes": 13
+            },
+            {
+              "from": "17:55",
+              "to": "20:15",
+              "headwayMinutes": 14
+            },
+            {
+              "from": "20:15",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "06:20",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "06:20",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "دولت‌آباد",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:00",
+              "to": "06:22",
+              "headwayMinutes": 11
+            },
+            {
+              "from": "06:22",
+              "to": "10:40",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "10:40",
+              "to": "14:58",
+              "headwayMinutes": 11
+            },
+            {
+              "from": "14:58",
+              "to": "20:10",
+              "headwayMinutes": 10
+            },
+            {
+              "from": "20:10",
+              "to": "21:40",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:40",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:00",
+              "to": "19:30",
+              "headwayMinutes": 13
+            },
+            {
+              "from": "19:30",
+              "to": "20:12",
+              "headwayMinutes": 14
+            },
+            {
+              "from": "20:12",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "21:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "21:00",
+              "to": "22:00",
+              "headwayMinutes": 20
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 30
+            }
+          ]
+        }
+      }
+    },
+    "9": {
+      "officialLine": 7,
+      "name": "خط ۷",
+      "startTime": "05:30",
+      "endTime": "23:00",
+      "fridayStartTime": "06:00",
+      "directions": {
+        "ascending": {
+          "originLabel": "میدان کتاب",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "22:40",
+              "headwayMinutes": 13
+            },
+            {
+              "from": "22:40",
+              "to": "23:00",
+              "headwayMinutes": 20
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:00",
+              "to": "20:00",
+              "headwayMinutes": 14
+            },
+            {
+              "from": "20:00",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 20
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 20
+            }
+          ]
+        },
+        "descending": {
+          "originLabel": "ورزشگاه تختی",
+          "weekday": [
+            {
+              "from": "05:30",
+              "to": "22:45",
+              "headwayMinutes": 13
+            },
+            {
+              "from": "22:45",
+              "to": "23:00",
+              "headwayMinutes": 15
+            }
+          ],
+          "thursday": [
+            {
+              "from": "05:30",
+              "to": "06:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "06:00",
+              "to": "20:00",
+              "headwayMinutes": 14
+            },
+            {
+              "from": "20:00",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 20
+            }
+          ],
+          "friday": [
+            {
+              "from": "06:00",
+              "to": "22:00",
+              "headwayMinutes": 15
+            },
+            {
+              "from": "22:00",
+              "to": "23:00",
+              "headwayMinutes": 20
+            }
+          ]
+        }
+      }
+    }
+  }
+}

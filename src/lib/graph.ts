@@ -1,13 +1,24 @@
 import type {
   ConnectivityInfo,
+  DayType,
   DijkstraOptions,
   EnrichedLine,
   GraphStation,
   MetroGraph,
   PathFindResult,
+  TravelDirection,
   WeightedPathResult,
 } from "../types/metro";
 import { haversineKm, stationLongitude } from "./geo";
+import {
+  TRANSFER_WALK_MINUTES,
+  dateToMinutes,
+  estimateWaitMinutes,
+  getDayType,
+  hopTravelMinutes,
+  minutesToClock,
+  waitForNextTrain,
+} from "./schedule";
 
 /**
  * Discrete Mathematics — Tehran Metro as G = (V, E)
@@ -16,12 +27,12 @@ import { haversineKm, stationLongitude } from "./geo";
  * Representation: adjacency list (optimal for a sparse transit network:
  * space Θ(n + e) vs Θ(n²) for an adjacency matrix).
  *
- * Routing uses a weighted graph: edge weight = geographic distance (km).
- * Line changes add a transfer penalty, so Dijkstra prefers fewer transfers
- * unless the detour is significantly longer.
+ * Default routing is time-aware Dijkstra: cost = arrival clock (minutes).
+ * Boarding / transfers add wait from official headways (metro.tehran.ir).
+ * A longer geographic path can win if it has a shorter wait / earlier arrival.
  */
 
-/** Default transfer cost ≈ a few inter-station hops (km-equivalent). */
+/** Default transfer cost ≈ a few inter-station hops (km-equivalent, legacy). */
 export const DEFAULT_TRANSFER_PENALTY_KM = 3;
 
 type DijkstraState = {
@@ -128,6 +139,17 @@ function edgeDistanceKm(from: GraphStation, to: GraphStation): number {
     return 1;
   }
   return haversineKm(from.latitude, lon1, to.latitude, lon2);
+}
+
+function travelDirection(
+  from: GraphStation,
+  to: GraphStation,
+  lineId: number
+): TravelDirection {
+  const fromSerial = from.lines.find((line) => line.id === lineId)?.serial_number;
+  const toSerial = to.lines.find((line) => line.id === lineId)?.serial_number;
+  if (fromSerial == null || toSerial == null) return "ascending";
+  return toSerial >= fromSerial ? "ascending" : "descending";
 }
 
 /**
@@ -287,10 +309,14 @@ export function bfsFindPath(
 /**
  * Dijkstra — weighted shortest path.
  *
- * State space is (station, arrival line) so transfer cost can be applied when
+ * State space is (station, arrival line) so transfer / boarding waits apply when
  * the rider leaves on a different line than they arrived on.
  *
- * Edge weight = haversine distance (km). Changing lines adds `transferPenaltyKm`.
+ * With `departureTime` (default: now): cost = arrival minutes from midnight.
+ * Boarding or changing lines adds wait from official headways + walk time, so a
+ * geographically longer route can win when another line arrives sooner.
+ *
+ * Without schedules (`useSchedule: false`): cost = km + transferPenaltyKm.
  * Time: O((n·L + e·L) log(n·L)) with a binary heap (L = lines per station).
  */
 export function dijkstraFindPath(
@@ -312,13 +338,124 @@ export function dijkstraFindPath(
 
   if (originId === destinationId) {
     const origin = stationsById.get(originId);
+    const departure = options.departureTime ?? new Date();
     return {
       path: origin ? [origin] : [],
       distanceKm: 0,
       transferCount: 0,
       cost: 0,
+      durationMinutes: 0,
+      arrivalClock: minutesToClock(dateToMinutes(departure)),
+      initialWaitMinutes: 0,
     };
   }
+
+  const useSchedule = options.useSchedule !== false;
+  if (useSchedule) {
+    const timed = dijkstraTimeAware(
+      stationsById,
+      originId,
+      destinationId,
+      options
+    );
+    if (timed.path.length) return timed;
+    // After last trains / mid-transfer past end-of-service: still show a
+    // geographic route so the map is useful late at night.
+    const fallback = dijkstraDistanceAware(
+      stationsById,
+      originId,
+      destinationId,
+      options
+    );
+    if (!fallback.path.length) return fallback;
+    return annotatePathTiming(fallback, options);
+  }
+
+  const distanceOnly = dijkstraDistanceAware(
+    stationsById,
+    originId,
+    destinationId,
+    options
+  );
+  if (!distanceOnly.path.length) return distanceOnly;
+  return annotatePathTiming(distanceOnly, options);
+}
+
+/**
+ * Walk a concrete station path and attach approximate door-to-door timing
+ * from the device clock + official headways (soft waits after end-of-service).
+ */
+export function annotatePathTiming(
+  result: WeightedPathResult,
+  options: DijkstraOptions = {}
+): WeightedPathResult {
+  if (result.path.length < 2) {
+    const departure = options.departureTime ?? new Date();
+    return {
+      ...result,
+      durationMinutes: 0,
+      arrivalClock: minutesToClock(dateToMinutes(departure)),
+      initialWaitMinutes: 0,
+    };
+  }
+
+  const departure = options.departureTime ?? new Date();
+  const dayType: DayType = options.dayType ?? getDayType(departure);
+  let clock = dateToMinutes(departure);
+  let previousLineId = 0;
+  let initialWaitMinutes = 0;
+
+  for (let i = 0; i < result.path.length - 1; i++) {
+    const from = result.path[i];
+    const to = result.path[i + 1];
+    const lines = connectingLineIds(from, to);
+    if (!lines.length) {
+      clock += hopTravelMinutes(edgeDistanceKm(from, to));
+      continue;
+    }
+
+    // Prefer staying on the same line when several share the hop.
+    const nextLineId =
+      previousLineId && lines.includes(previousLineId)
+        ? previousLineId
+        : lines[0];
+    const direction = travelDirection(from, to, nextLineId);
+    const isBoardOrTransfer =
+      previousLineId === 0 || previousLineId !== nextLineId;
+
+    if (isBoardOrTransfer) {
+      if (previousLineId !== 0) clock += TRANSFER_WALK_MINUTES;
+      const wait = estimateWaitMinutes(nextLineId, clock, direction, dayType);
+      if (previousLineId === 0) initialWaitMinutes = wait;
+      clock += wait;
+    }
+
+    clock += hopTravelMinutes(edgeDistanceKm(from, to));
+    previousLineId = nextLineId;
+  }
+
+  const departureMinutes = dateToMinutes(departure);
+  return {
+    ...result,
+    durationMinutes: Math.max(0, clock - departureMinutes),
+    arrivalClock: minutesToClock(clock),
+    initialWaitMinutes,
+  };
+}
+
+/** Legacy distance + transfer-penalty Dijkstra (km units). */
+function dijkstraDistanceAware(
+  stationsById: MetroGraph,
+  originId: number,
+  destinationId: number,
+  options: DijkstraOptions
+): WeightedPathResult {
+  const empty: WeightedPathResult = {
+    path: [],
+    distanceKm: 0,
+    transferCount: 0,
+    cost: 0,
+  };
 
   const transferPenaltyKm =
     options.transferPenaltyKm ?? DEFAULT_TRANSFER_PENALTY_KM;
@@ -378,7 +515,131 @@ export function dijkstraFindPath(
   }
 
   if (bestGoalKey === null) return empty;
+  return reconstructWeighted(stationsById, parent, dist, bestGoalKey);
+}
 
+/**
+ * Time-dependent Dijkstra: minimize arrival clock using headway waits.
+ * Cost at each state = minutes from midnight when the rider is ready there.
+ */
+function dijkstraTimeAware(
+  stationsById: MetroGraph,
+  originId: number,
+  destinationId: number,
+  options: DijkstraOptions
+): WeightedPathResult {
+  const empty: WeightedPathResult = {
+    path: [],
+    distanceKm: 0,
+    transferCount: 0,
+    cost: 0,
+  };
+
+  const departure = options.departureTime ?? new Date();
+  const dayType: DayType = options.dayType ?? getDayType(departure);
+  const departureMinutes = dateToMinutes(departure);
+
+  const dist = new Map<number, number>();
+  const parent = new Map<number, number | null>();
+  /** Wait before first boarding, recorded when leaving the start state. */
+  const initialWaitByKey = new Map<number, number>();
+  const heap = new MinHeap();
+
+  const startKey = stateKey(originId, 0);
+  dist.set(startKey, departureMinutes);
+  parent.set(startKey, null);
+  initialWaitByKey.set(startKey, 0);
+  heap.push({ stationId: originId, lineId: 0, cost: departureMinutes });
+
+  let bestGoalKey: number | null = null;
+
+  while (heap.size) {
+    const current = heap.pop();
+    if (!current) break;
+
+    const uKey = stateKey(current.stationId, current.lineId);
+    const bestKnown = dist.get(uKey);
+    if (bestKnown !== undefined && current.cost > bestKnown + 1e-9) continue;
+
+    if (current.stationId === destinationId) {
+      bestGoalKey = uKey;
+      break;
+    }
+
+    const u = stationsById.get(current.stationId);
+    if (!u) continue;
+
+    for (const vId of u.neighbors) {
+      const v = stationsById.get(vId);
+      if (!v) continue;
+
+      const lines = connectingLineIds(u, v);
+      if (!lines.length) continue;
+
+      const hopKm = edgeDistanceKm(u, v);
+      const rideMinutes = hopTravelMinutes(hopKm);
+
+      for (const nextLineId of lines) {
+        const direction = travelDirection(u, v, nextLineId);
+        const isTransferOrBoard =
+          current.lineId === 0 || current.lineId !== nextLineId;
+
+        let readyAt = current.cost;
+        let boardWait = 0;
+
+        if (isTransferOrBoard) {
+          // Walk between platforms when changing lines (not at journey start).
+          if (current.lineId !== 0) {
+            readyAt += TRANSFER_WALK_MINUTES;
+          }
+          boardWait = waitForNextTrain(nextLineId, readyAt, direction, dayType);
+          if (!Number.isFinite(boardWait)) continue;
+          readyAt += boardWait;
+        }
+
+        const nextCost = readyAt + rideMinutes;
+        const vKey = stateKey(vId, nextLineId);
+        const prev = dist.get(vKey);
+
+        if (prev !== undefined && nextCost >= prev - 1e-9) continue;
+
+        dist.set(vKey, nextCost);
+        parent.set(vKey, uKey);
+
+        const prevInitial = initialWaitByKey.get(uKey) ?? 0;
+        const nextInitial =
+          current.lineId === 0 ? boardWait : prevInitial;
+        initialWaitByKey.set(vKey, nextInitial);
+
+        heap.push({ stationId: vId, lineId: nextLineId, cost: nextCost });
+      }
+    }
+  }
+
+  if (bestGoalKey === null) return empty;
+
+  const result = reconstructWeighted(
+    stationsById,
+    parent,
+    dist,
+    bestGoalKey
+  );
+  const arrival = dist.get(bestGoalKey) ?? departureMinutes;
+
+  return {
+    ...result,
+    durationMinutes: Math.max(0, arrival - departureMinutes),
+    arrivalClock: minutesToClock(arrival),
+    initialWaitMinutes: initialWaitByKey.get(bestGoalKey) ?? 0,
+  };
+}
+
+function reconstructWeighted(
+  stationsById: MetroGraph,
+  parent: Map<number, number | null>,
+  dist: Map<number, number>,
+  bestGoalKey: number
+): WeightedPathResult {
   const stateKeys: number[] = [];
   let cursor: number | null = bestGoalKey;
   while (cursor !== null) {
@@ -411,7 +672,6 @@ export function dijkstraFindPath(
       distanceKm += edgeDistanceKm(prevStation, station);
     }
 
-    // Collapse consecutive duplicate stations (should not happen, but safe).
     if (!path.length || path[path.length - 1].id !== station.id) {
       path.push(station);
     }

@@ -7,12 +7,15 @@ import {
   type CSSProperties,
   type ReactElement,
 } from "react";
-import { buildAdjacencyList, dijkstraFindPath } from "../lib/graph";
+import { toPersianDigits } from "../lib/format";
 import {
   findNearestStation,
   geoErrorMessage,
   stationLabel,
 } from "../lib/geo";
+import { buildAdjacencyList, dijkstraFindPath } from "../lib/graph";
+import { lineNumber } from "../lib/metro-data";
+import { formatDurationFa, minutesToClock } from "../lib/schedule";
 import type {
   AutofillStation,
   EnrichedLine,
@@ -30,10 +33,16 @@ function withLineColors(
 ): AutofillStation {
   return {
     ...station,
-    lines: station.lines.map((stationLine) => ({
-      ...stationLine,
-      color: lines.find((item) => item.id === stationLine.id)?.color || "#999",
-    })),
+    lines: station.lines.map((stationLine) => {
+      const line = lines.find((item) => item.id === stationLine.id);
+      return {
+        ...stationLine,
+        color: line?.color || "#999",
+        label: toPersianDigits(
+          (line && lineNumber(line)) || String(stationLine.id)
+        ),
+      };
+    }),
   };
 }
 
@@ -62,13 +71,24 @@ export default function Search({
   const [destinationId, setDestinationId] = useState(0);
   const [focus, setFocus] = useState<SearchFocus>(false);
   const [way, setWay] = useState<WeightedPathResult["path"]>([]);
-  const [routeStats, setRouteStats] = useState<
-    Pick<WeightedPathResult, "distanceKm" | "transferCount">
-  >({ distanceKm: 0, transferCount: 0 });
+  const [routeStats, setRouteStats] = useState<{
+    distanceKm: number;
+    transferCount: number;
+    durationMinutes: number;
+    arrivalClock: string;
+    initialWaitMinutes: number;
+  }>({
+    distanceKm: 0,
+    transferCount: 0,
+    durationMinutes: 0,
+    arrivalClock: "",
+    initialWaitMinutes: 0,
+  });
   const [sheetOpen, setSheetOpen] = useState(false);
   const [awaitingOrigin, setAwaitingOrigin] = useState(false);
   const [locating, setLocating] = useState(false);
   const [geoHint, setGeoHint] = useState("");
+  const [allStopsVisible, setAllStopsVisible] = useState(false);
   const originInputRef = useRef<HTMLInputElement>(null);
   const originIdRef = useRef(0);
 
@@ -261,26 +281,50 @@ export default function Search({
     setOriginId(0);
     setDestinationId(0);
     setWay([]);
-    setRouteStats({ distanceKm: 0, transferCount: 0 });
+    setRouteStats({
+      distanceKm: 0,
+      transferCount: 0,
+      durationMinutes: 0,
+      arrivalClock: "",
+      initialWaitMinutes: 0,
+    });
     setAwaitingOrigin(false);
     setLocating(false);
     setGeoHint("");
+    setAllStopsVisible(false);
     onRouteChange([]);
   }, [onRouteChange]);
 
   useEffect(() => {
     if (!originId || !destinationId) {
       setWay([]);
-      setRouteStats({ distanceKm: 0, transferCount: 0 });
+      setRouteStats({
+        distanceKm: 0,
+        transferCount: 0,
+        durationMinutes: 0,
+        arrivalClock: "",
+        initialWaitMinutes: 0,
+      });
+      setAllStopsVisible(false);
       onRouteChange([]);
       return;
     }
 
-    const result = dijkstraFindPath(stationsById, originId, destinationId);
+    setAllStopsVisible(false);
+    const departureTime = new Date();
+    const result = dijkstraFindPath(stationsById, originId, destinationId, {
+      departureTime,
+    });
     setWay(result.path);
     setRouteStats({
       distanceKm: result.distanceKm,
       transferCount: result.transferCount,
+      durationMinutes: result.durationMinutes ?? 0,
+      arrivalClock:
+        result.arrivalClock ?? minutesToClock(
+          departureTime.getHours() * 60 + departureTime.getMinutes()
+        ),
+      initialWaitMinutes: result.initialWaitMinutes ?? 0,
     });
     onRouteChange(result.path.map((station) => station.id));
   }, [originId, destinationId, stationsById, onRouteChange]);
@@ -332,6 +376,23 @@ export default function Search({
       };
     });
   }, [way, lines]);
+
+  const displayedRouteSteps = useMemo(
+    () =>
+      allStopsVisible
+        ? routeSteps
+        : routeSteps.filter(
+            (step) => step.isStart || step.isEnd || step.isTransfer
+          ),
+    [allStopsVisible, routeSteps]
+  );
+  const intermediateStopCount = Math.max(
+    0,
+    routeSteps.length -
+      routeSteps.filter(
+        (step) => step.isStart || step.isEnd || step.isTransfer
+      ).length
+  );
 
   const sheetClass = [
     "searchForm",
@@ -513,7 +574,7 @@ export default function Search({
                     <div className="lines">
                       {fill.lines.map((line) => (
                         <b key={line.id} style={{ backgroundColor: line.color }}>
-                          {line.id}
+                          {line.label}
                         </b>
                       ))}
                     </div>
@@ -539,27 +600,102 @@ export default function Search({
                       </button>
                     </div>
 
-                    <div className="routeMeta">
-                      <span>{way.length} ایستگاه</span>
-                      <span>
-                        {routeStats.distanceKm < 10
-                          ? routeStats.distanceKm.toFixed(1)
-                          : Math.round(routeStats.distanceKm)}{" "}
-                        کیلومتر
-                      </span>
-                      <span>
-                        {routeStats.transferCount === 0
-                          ? "بدون تعویض خط"
-                          : `${routeStats.transferCount} تعویض خط`}
-                      </span>
-                    </div>
+                    {routeStats.arrivalClock || way.length > 0 ? (
+                      <div className="routeSummary" aria-live="polite">
+                        <div className="routeSummaryEta">
+                          <span className="routeSummaryLabel">
+                            رسیدن تقریبی
+                          </span>
+                          <strong className="routeSummaryClock">
+                            {routeStats.arrivalClock || "—"}
+                          </strong>
+                          {routeStats.durationMinutes > 0 ? (
+                            <span className="routeSummaryDuration">
+                              {formatDurationFa(routeStats.durationMinutes)}
+                            </span>
+                          ) : null}
+                          {routeStats.initialWaitMinutes >= 1 ? (
+                            <p className="routeSummaryWait">
+                              قطار اول حدود{" "}
+                              {toPersianDigits(
+                                Math.round(routeStats.initialWaitMinutes)
+                              )}{" "}
+                              دقیقه دیگر
+                            </p>
+                          ) : null}
+                        </div>
+
+                        <div className="routeSummaryStats">
+                          <div className="routeSummaryStat">
+                            <b>{toPersianDigits(way.length)}</b>
+                            <span>ایستگاه</span>
+                          </div>
+                          <div className="routeSummaryStat">
+                            <b>
+                              {toPersianDigits(
+                                routeStats.distanceKm < 10
+                                  ? routeStats.distanceKm.toFixed(1)
+                                  : Math.round(routeStats.distanceKm)
+                              )}
+                            </b>
+                            <span>کیلومتر</span>
+                          </div>
+                          <div className="routeSummaryStat">
+                            <b>{toPersianDigits(routeStats.transferCount)}</b>
+                            <span>
+                              {routeStats.transferCount === 0
+                                ? "بدون تعویض"
+                                : "تعویض خط"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ) : null}
 
                     <div className="routeList">
-                      {routeSteps.map((step) => (
+                      {intermediateStopCount > 0 ? (
+                        <button
+                          type="button"
+                          className="routeStopsToggle"
+                          aria-expanded={allStopsVisible}
+                          onClick={() =>
+                            setAllStopsVisible((isVisible) => !isVisible)
+                          }
+                        >
+                          <span>
+                            {allStopsVisible
+                              ? "نمایش خلاصه مسیر"
+                              : `نمایش ${toPersianDigits(
+                                  intermediateStopCount
+                                )} ایستگاه بین راه`}
+                          </span>
+                          <svg
+                            className={`routeStopsChevron${
+                              allStopsVisible ? " isOpen" : ""
+                            }`}
+                            viewBox="0 0 24 24"
+                            width="16"
+                            height="16"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.25"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            aria-hidden="true"
+                          >
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        </button>
+                      ) : null}
+
+                      {displayedRouteSteps.map((step) => (
                         <div
                           key={`${step.station.id}-${step.index}`}
                           className={[
                             "routeStep",
+                            !allStopsVisible && !step.isStart && !step.isEnd
+                              ? "routeStepKey"
+                              : "",
                             step.isStart ? "start" : "",
                             step.isEnd ? "end" : "",
                             step.isTransfer ? "transfer" : "",

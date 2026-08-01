@@ -9,6 +9,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
+import { toPersianDigits } from "../lib/format";
 import { stationLabel } from "../lib/geo";
 import {
   clampZoom,
@@ -543,7 +544,7 @@ export default function MapView({
             >
               +
             </button>
-            <span>{Math.round(zoom * 100)}٪</span>
+            <span>{toPersianDigits(Math.round(zoom * 100))}٪</span>
             <button
               type="button"
               onClick={() => animateToZoom(zoomRef.current - 0.25)}

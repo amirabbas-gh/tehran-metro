@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { toPersianDigits } from "../lib/format";
 import type { ConnectivityInfo } from "../types/metro";
 
 export type GraphInfoPanelProps = {
@@ -14,11 +15,11 @@ export default function GraphInfoPanel({
       <dl>
         <div>
           <dt>|V|</dt>
-          <dd>{info.n} stations</dd>
+          <dd>{toPersianDigits(info.n)} stations</dd>
         </div>
         <div>
           <dt>|E|</dt>
-          <dd>{info.e} edges</dd>
+          <dd>{toPersianDigits(info.e)} edges</dd>
         </div>
         <div>
           <dt>Type</dt>
@@ -30,14 +31,14 @@ export default function GraphInfoPanel({
         </div>
         <div>
           <dt>Route</dt>
-          <dd>Dijkstra · O((V+E)log V)</dd>
+          <dd>Dijkstra · time-aware</dd>
         </div>
         <div>
           <dt>Connected</dt>
           <dd>
             {info.connected
               ? "Yes (DFS)"
-              : `${info.componentCount} components`}
+              : `${toPersianDigits(info.componentCount)} components`}
           </dd>
         </div>
       </dl>

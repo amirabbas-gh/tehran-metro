@@ -343,36 +343,45 @@ input:focus-visible {
   display: flex;
   flex: 1;
   flex-direction: column;
+  padding: 0 2px;
 }
 
 .panelTitle {
-  margin-bottom: 8px;
+  margin: 0 0 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
 }
 
 .panelTitle strong,
 .panelHeading {
   font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .clearRoute {
-  padding: 4px 8px;
+  min-height: 28px;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
+  border-radius: var(--radius-pill);
+  background: var(--bg-input);
   color: var(--text-secondary);
   cursor: pointer;
   font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .clearRoute:hover {
   background: var(--bg-hover);
   border-color: var(--border-strong);
-  color: var(--text);
+  color: var(--danger);
 }
 
 .sidebarPanel {
@@ -447,19 +456,88 @@ input:focus-visible {
   line-height: 1.4;
 }
 
-.routeMeta {
-  margin-bottom: 10px;
+.routeSummary {
+  margin: 0 0 12px;
   display: flex;
-  gap: 6px;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  overflow: hidden;
 }
 
-.routeMeta span {
-  padding: 3px 8px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--bg-muted);
+.routeSummaryEta {
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.routeSummaryLabel {
+  margin-bottom: 5px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.routeSummaryClock {
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.routeSummaryDuration {
+  margin-top: 5px;
   color: var(--text-secondary);
   font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.routeSummaryWait {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.routeSummaryStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.routeSummaryStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 6px 10px;
+  text-align: center;
+  min-width: 0;
+}
+
+.routeSummaryStat + .routeSummaryStat {
+  border-right: 1px solid var(--border);
+}
+
+.routeSummaryStat b {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.routeSummaryStat span {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .routeList {
@@ -469,11 +547,56 @@ input:focus-visible {
   flex-direction: column;
 }
 
+.routeStopsToggle {
+  width: 100%;
+  min-height: 36px;
+  margin: 0 0 8px;
+  padding: 7px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 0;
+  border-bottom: 1px solid var(--border-soft);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.routeStopsToggle:hover {
+  color: var(--text);
+}
+
+.routeStopsChevron {
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  color: var(--text-muted);
+  transition: transform 0.18s ease, color 0.15s ease;
+}
+
+.routeStopsToggle:hover .routeStopsChevron {
+  color: var(--text);
+}
+
+.routeStopsChevron.isOpen {
+  transform: rotate(180deg);
+}
+
 .routeStep {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr);
   gap: 8px;
   min-height: 34px;
+}
+
+.routeStepKey {
+  min-height: 38px;
 }
 
 .routeRail {
@@ -487,7 +610,7 @@ input:focus-visible {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 2px;
   background: var(--route-color, #ccc);
 }
 
@@ -512,17 +635,17 @@ input:focus-visible {
 
 .routeStep.start .routeRail i,
 .routeStep.end .routeRail i {
-  width: 12px;
-  height: 12px;
-  margin-top: 6px;
-  border-width: 3px;
+  width: 11px;
+  height: 11px;
+  margin-top: 7px;
+  border-width: 2px;
 }
 
 .routeStep.transfer .routeRail i {
-  width: 12px;
-  height: 12px;
-  margin-top: 6px;
-  border: 2.5px solid var(--rail-transfer);
+  width: 11px;
+  height: 11px;
+  margin-top: 7px;
+  border: 2px solid var(--rail-transfer);
   background: var(--bg-surface);
 }
 
@@ -543,8 +666,14 @@ input:focus-visible {
 .routeStep.end .routeContent strong,
 .routeStep.transfer .routeContent strong {
   color: var(--text);
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.routeStep.start .routeContent,
+.routeStep.end .routeContent,
+.routeStep.transfer .routeContent {
+  padding-bottom: 14px;
 }
 
 .routeContent em {
@@ -864,12 +993,11 @@ input:focus-visible {
   text-align: center;
   color: var(--text-secondary);
   font-size: 11px;
-  font-variant-numeric: tabular-nums;
 }
 
 .graphInfo {
   position: fixed;
-  right: 20px;
+  left: 20px;
   bottom: 20px;
   z-index: 40;
   width: min(220px, calc(100vw - 40px));
@@ -1730,18 +1858,29 @@ input:focus-visible {
   }
 
   .clearRoute {
-    min-height: 32px;
-    padding: 6px 10px;
-    border-radius: 8px;
+    min-height: 30px;
+    padding: 0 12px;
     font-size: 12px;
   }
 
-  .routeMeta {
-    margin-bottom: 8px;
+  .routeSummary {
+    margin-bottom: 10px;
   }
 
-  .routeMeta span {
-    border-radius: 999px;
+  .routeSummaryEta {
+    padding: 12px 12px 10px;
+  }
+
+  .routeSummaryClock {
+    font-size: 24px;
+  }
+
+  .routeSummaryStat {
+    padding: 9px 4px 10px;
+  }
+
+  .routeSummaryStat b {
+    font-size: 13px;
   }
 
   .graphInfo {

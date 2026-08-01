@@ -69,20 +69,75 @@ export type PathFindResult = {
   visited: Set<number>;
 };
 
-/** Weighted shortest path from Dijkstra (distance + transfer penalties). */
+/** Weighted shortest path from Dijkstra (distance + transfer / wait times). */
 export type WeightedPathResult = {
   path: GraphStation[];
-  /** Sum of haversine edge lengths along the path (km), excluding transfer penalties. */
+  /** Sum of haversine edge lengths along the path (km). */
   distanceKm: number;
   /** Number of line changes along the path. */
   transferCount: number;
-  /** Total Dijkstra cost (distanceKm + transfer penalties). */
+  /**
+   * Total Dijkstra cost.
+   * With schedules: arrival minutes from midnight.
+   * Without schedules (legacy): distanceKm + transfer km-penalties.
+   */
   cost: number;
+  /** Door-to-door duration in minutes (includes waits), when time-aware. */
+  durationMinutes?: number;
+  /** Clock time of arrival at destination (HH:mm), when time-aware. */
+  arrivalClock?: string;
+  /** Wait at origin before first boarding (minutes), when time-aware. */
+  initialWaitMinutes?: number;
 };
 
 export type DijkstraOptions = {
-  /** Extra cost (km-equivalent) applied each time the rider changes lines. */
+  /** Extra cost (km-equivalent) when schedules are disabled. */
   transferPenaltyKm?: number;
+  /**
+   * Device / journey start time. Defaults to now when schedules are enabled.
+   * Official headways drive boarding / transfer waits.
+   */
+  departureTime?: Date;
+  /** Override day-type detection (tests). */
+  dayType?: DayType;
+  /** When false, use legacy km + transfer-penalty costs. Default true. */
+  useSchedule?: boolean;
+};
+
+/** Official headway day categories from metro.tehran.ir. */
+export type DayType = "weekday" | "thursday" | "friday";
+
+export type TravelDirection = "ascending" | "descending";
+
+export type HeadwayPeriod = {
+  from: string;
+  to: string;
+  headwayMinutes: number;
+};
+
+export type ScheduleDirection = {
+  originLabel: string;
+  weekday: HeadwayPeriod[];
+  thursday: HeadwayPeriod[];
+  friday: HeadwayPeriod[];
+};
+
+export type LineSchedule = {
+  officialLine: number;
+  name: string;
+  startTime: string;
+  endTime: string;
+  fridayStartTime?: string;
+  directions: Record<TravelDirection, ScheduleDirection>;
+};
+
+export type SchedulesFile = {
+  source: string;
+  sourceNote?: string;
+  avgHopMinutes: number;
+  transferWalkMinutes: number;
+  dayTypes: Record<DayType, string>;
+  lines: Record<string, LineSchedule>;
 };
 
 export type ConnectivityInfo = {
@@ -115,7 +170,7 @@ export type InstallUi = "banner" | "leaving" | "chip";
 export type SearchFocus = false | "o" | "d";
 
 export type AutofillStation = Omit<EnrichedStation, "lines"> & {
-  lines: Array<StationLineMembership & { color: string }>;
+  lines: Array<StationLineMembership & { color: string; label: string }>;
 };
 
 export type MapBounds = {

@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { toPersianDigits } from "../lib/format";
 import type { BeforeInstallPromptEvent } from "../types/pwa";
 import type { InstallUi } from "../types/metro";
 
@@ -32,8 +33,9 @@ export default function PwaBanners({
         <div className="installBannerText">
           <strong>نسخه جدید آماده است</strong>
           <span className="installDesc">
-            {changelogLead ??
-              "برای دریافت تغییرات جدید، اپ را به‌روزرسانی کنید"}
+            {changelogLead
+              ? toPersianDigits(changelogLead)
+              : "برای دریافت تغییرات جدید، اپ را به‌روزرسانی کنید"}
           </span>
           <span className="installShort">آپدیت جدید</span>
         </div>
