@@ -8,8 +8,52 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 );
 
+function isInstalledPwa() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
+}
+
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  window.addEventListener("load", async () => {
+    try {
+      const registration = await navigator.serviceWorker.register("/sw.js");
+
+      const notifyUpdate = (worker) => {
+        if (!worker) return;
+
+        // A first-time visitor must activate the initial worker; this is not an update.
+        if (!navigator.serviceWorker.controller) {
+          worker.postMessage({ type: "SKIP_WAITING" });
+          return;
+        }
+
+        // The update call-to-action is reserved for users running the installed app.
+        if (isInstalledPwa()) {
+          window.dispatchEvent(
+            new CustomEvent("pwa-update-ready", { detail: registration })
+          );
+        }
+      };
+
+      notifyUpdate(registration.waiting);
+
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "installed") notifyUpdate(worker);
+        });
+      });
+
+      const checkForUpdate = () => registration.update().catch(() => {});
+      setInterval(checkForUpdate, 60 * 60 * 1000);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") checkForUpdate();
+      });
+    } catch {
+      // PWA support is optional; the web app remains usable.
+    }
   });
 }

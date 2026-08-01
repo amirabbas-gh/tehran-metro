@@ -98,6 +98,7 @@ function App() {
   const animToken = useRef(0);
   const zoomSyncTimer = useRef(0);
   const mapSize = useRef({ width: 0, height: 0 });
+  const applyingUpdate = useRef(false);
   const pointers = useRef(new Map());
   const pinch = useRef({
     active: false,
@@ -124,6 +125,7 @@ function App() {
   const [goRequest, setGoRequest] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [installUi, setInstallUi] = useState("banner"); // banner | leaving | chip
+  const [updateReady, setUpdateReady] = useState(false);
   const [theme, setTheme] = useState(() => getPreferredTheme());
 
   const closeStationCard = () => {
@@ -174,6 +176,24 @@ function App() {
     return () => window.removeEventListener("beforeinstallprompt", onPrompt);
   }, []);
 
+  useEffect(() => {
+    const onUpdateReady = () => setUpdateReady(true);
+    const onControllerChange = () => {
+      if (applyingUpdate.current) window.location.reload();
+    };
+
+    window.addEventListener("pwa-update-ready", onUpdateReady);
+    navigator.serviceWorker?.addEventListener("controllerchange", onControllerChange);
+
+    return () => {
+      window.removeEventListener("pwa-update-ready", onUpdateReady);
+      navigator.serviceWorker?.removeEventListener(
+        "controllerchange",
+        onControllerChange
+      );
+    };
+  }, []);
+
   // Once the user starts interacting with the app, fade the install banner away.
   useEffect(() => {
     if (!installPrompt || installUi !== "banner") return;
@@ -196,6 +216,13 @@ function App() {
     installPrompt.prompt();
     await installPrompt.userChoice;
     setInstallPrompt(null);
+  }
+
+  function applyUpdate() {
+    navigator.serviceWorker?.getRegistration().then((registration) => {
+      applyingUpdate.current = true;
+      registration?.waiting?.postMessage({ type: "SKIP_WAITING" });
+    });
   }
 
   const bounds = useMemo(
@@ -913,7 +940,30 @@ function App() {
         </aside>
       ) : null}
 
-      {installPrompt && (installUi === "banner" || installUi === "leaving") ? (
+      {updateReady ? (
+        <div className="installBanner" role="dialog" aria-label="آپدیت اپلیکیشن">
+          <img src="/icon-192.png" alt="" width="40" height="40" />
+          <div className="installBannerText">
+            <strong>نسخه جدید آماده است</strong>
+            <span className="installDesc">برای دریافت تغییرات جدید، اپ را به‌روزرسانی کنید</span>
+            <span className="installShort">آپدیت جدید</span>
+          </div>
+          <button type="button" className="installBannerGo" onClick={applyUpdate}>
+            آپدیت
+          </button>
+          <button
+            type="button"
+            className="installBannerClose"
+            aria-label="بعداً"
+            onClick={() => setUpdateReady(false)}
+          >
+            <span className="installLater">بعداً</span>
+            <span className="installX" aria-hidden="true">
+              ×
+            </span>
+          </button>
+        </div>
+      ) : installPrompt && (installUi === "banner" || installUi === "leaving") ? (
         <div
           className={`installBanner${installUi === "leaving" ? " isLeaving" : ""}`}
           role="dialog"
