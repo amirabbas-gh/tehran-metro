@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Android signing secrets (keystore + passwords) — keep local only
-android-signing/
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
