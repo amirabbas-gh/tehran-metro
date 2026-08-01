@@ -1,5 +1,11 @@
 # tehran-metro
 
+## 1.2.0
+
+### Minor Changes
+
+- dceff86: Make routing time-aware with official Tehran Metro headways: Dijkstra now factors wait and transfer times from the device clock, search shows approximate arrival, and UI numbers render in Persian digits.
+
 ## 1.1.0
 
 ### Minor Changes
