@@ -23,11 +23,13 @@ import {
   enrichMetroData,
 } from "./lib/metro-data";
 import {
-  dismissRemoteUpdate,
   downloadAndroidApk,
   fetchRemoteUpdate,
   isInstalledPwa,
-  shouldOfferAndroidApk,
+  isRelatedAndroidAppInstalled,
+  markAndroidAppKnownInstalled,
+  wasAndroidAppKnownInstalled,
+  dismissRemoteUpdate,
   type RemoteUpdateInfo,
 } from "./lib/pwa";
 import { applyTheme, getPreferredTheme, persistTheme } from "./lib/theme";
@@ -62,8 +64,8 @@ export default function App(): ReactElement {
   const [goRequest, setGoRequest] = useState<GoRequest | null>(null);
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [androidApkOffer, setAndroidApkOffer] = useState(() =>
-    shouldOfferAndroidApk()
+  const [relatedAppInstalled, setRelatedAppInstalled] = useState(() =>
+    wasAndroidAppKnownInstalled()
   );
   const [installUi, setInstallUi] = useState<InstallUi>("banner");
   const [updateReady, setUpdateReady] = useState(false);
@@ -72,7 +74,10 @@ export default function App(): ReactElement {
   );
   const [theme, setTheme] = useState<Theme>(() => getPreferredTheme());
 
-  const showInstall = Boolean(installPrompt) || androidApkOffer;
+  const appInstalled = isInstalledPwa() || relatedAppInstalled;
+  // Only when the browser reports installability — avoids install banner on
+  // phones that already have the app (beforeinstallprompt usually won't fire).
+  const showInstall = !appInstalled && Boolean(installPrompt);
   const latestChangelogEntries = useMemo(
     () => parseLatestChangelogEntries(changelogRaw),
     []
@@ -112,18 +117,38 @@ export default function App(): ReactElement {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    void isRelatedAndroidAppInstalled().then((installed) => {
+      if (cancelled || !installed) return;
+      markAndroidAppKnownInstalled();
+      setRelatedAppInstalled(true);
+      setInstallPrompt(null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     const onPrompt = (event: BeforeInstallPromptEvent) => {
       event.preventDefault();
+      if (isInstalledPwa() || relatedAppInstalled) return;
       setInstallPrompt(event);
       setInstallUi("banner");
     };
-    window.addEventListener("beforeinstallprompt", onPrompt);
-    window.addEventListener("appinstalled", () => {
+    const onInstalled = () => {
+      markAndroidAppKnownInstalled();
+      setRelatedAppInstalled(true);
       setInstallPrompt(null);
       setInstallUi("banner");
-    });
-    return () => window.removeEventListener("beforeinstallprompt", onPrompt);
-  }, []);
+    };
+    window.addEventListener("beforeinstallprompt", onPrompt);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onPrompt);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, [relatedAppInstalled]);
 
   useEffect(() => {
     const onUpdateReady = () => setUpdateReady(true);
@@ -147,7 +172,9 @@ export default function App(): ReactElement {
   }, []);
 
   useEffect(() => {
-    if (!isInstalledPwa()) return;
+    // Compare bundled version with GitHub CHANGELOG in the installed app,
+    // and also in the browser when the Android package is already on-device.
+    if (!isInstalledPwa() && !relatedAppInstalled) return;
 
     const controller = new AbortController();
 
@@ -158,7 +185,7 @@ export default function App(): ReactElement {
           if (!controller.signal.aborted) setRemoteUpdate(info);
         })
         .catch(() => {
-          /* Offline or GitHub unavailable; skip the banner. */
+          /* Offline or changelog hosts unavailable; skip the banner. */
         });
     };
 
@@ -174,7 +201,7 @@ export default function App(): ReactElement {
       window.removeEventListener("online", checkRemoteChangelog);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [relatedAppInstalled]);
 
   useEffect(() => {
     if (!showInstall || installUi !== "banner") return;
@@ -194,13 +221,13 @@ export default function App(): ReactElement {
   }, [showInstall, installUi]);
 
   async function runInstall() {
-    if (androidApkOffer) {
+    if (!installPrompt) return;
+    // On Android, ship the targetSdk-35 TWA APK instead of the browser WebAPK.
+    if (/Android/i.test(navigator.userAgent)) {
       downloadAndroidApk();
-      setAndroidApkOffer(false);
       setInstallPrompt(null);
       return;
     }
-    if (!installPrompt) return;
     await installPrompt.prompt();
     await installPrompt.userChoice;
     setInstallPrompt(null);
@@ -208,6 +235,15 @@ export default function App(): ReactElement {
 
   function applyUpdate() {
     void (async () => {
+      // Site in browser while the Android package is already on-device.
+      if (!isInstalledPwa() && relatedAppInstalled) {
+        downloadAndroidApk();
+        if (remoteUpdate) dismissRemoteUpdate(remoteUpdate.version);
+        setRemoteUpdate(null);
+        setUpdateReady(false);
+        return;
+      }
+
       applyingUpdate.current = true;
       const registration = await navigator.serviceWorker?.getRegistration();
       if (registration?.waiting) {

@@ -8,6 +8,12 @@ export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
+export type RelatedApplication = {
+  id?: string;
+  platform?: string;
+  url?: string;
+};
+
 declare global {
   interface WindowEventMap {
     beforeinstallprompt: BeforeInstallPromptEvent;
@@ -17,6 +23,7 @@ declare global {
   interface Navigator {
     /** iOS Safari standalone PWA flag. */
     standalone?: boolean;
+    getInstalledRelatedApps?: () => Promise<RelatedApplication[]>;
   }
 }
 
