@@ -15,7 +15,8 @@ const MOBILE_MAX_WIDTH = 899;
 const TEHRAN_CENTER = { longitude: 51.421, latitude: 35.701 };
 // Positive Y shifts the initial view down so the map sits a bit higher.
 const DEFAULT_PAN_OFFSET_Y = 110;
-const MOBILE_PAN_OFFSET_Y = 160;
+// Extra offset clears the floating mobile top chrome.
+const MOBILE_PAN_OFFSET_Y = 220;
 
 function isMobileViewport() {
   return window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`).matches;

@@ -7,6 +7,7 @@ body,
 #root {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   margin: 0;
   overflow: hidden;
 }
@@ -24,8 +25,9 @@ input {
 
 .page {
   width: min(1200px, 100%);
-  height: 100dvh;
+  height: 100%;
   height: 100vh;
+  height: 100dvh;
   margin: 0 auto;
   padding: 12px;
   display: grid;
@@ -1056,6 +1058,8 @@ input {
     --sheet-radius: 20px;
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+    /* Floating top chrome (inset + bar height) so map stations stay tappable */
+    --map-top-chrome: calc(var(--sheet-inset) + var(--safe-top) + 60px);
     position: relative;
     padding: 0;
     display: block;
@@ -1100,7 +1104,7 @@ input {
   }
 
   .installBanner {
-    bottom: calc(188px + var(--sheet-inset) + var(--safe-bottom) + 12px);
+    bottom: calc(188px + var(--safe-bottom) + 12px);
     width: max-content;
     max-width: calc(100vw - (var(--sheet-inset) * 2));
     padding: 6px 6px 6px 8px;
@@ -1180,24 +1184,23 @@ input {
 
   .mapViewport {
     padding: 0;
-    padding-bottom: calc(
-      188px + var(--sheet-inset) + var(--safe-bottom)
-    );
+    padding-top: var(--map-top-chrome);
+    padding-bottom: calc(188px + var(--safe-bottom));
   }
 
   .searchForm {
-    position: absolute;
-    left: var(--sheet-inset);
-    right: var(--sheet-inset);
-    bottom: calc(var(--sheet-inset) + var(--safe-bottom));
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
     z-index: 50;
     width: auto;
     max-width: none;
-    max-height: none;
+    max-height: calc(100dvh - var(--safe-top) - 8px);
     height: auto;
-    padding: 0 var(--sheet-pad) var(--sheet-pad);
+    padding: 0 var(--sheet-pad) calc(var(--sheet-pad) + var(--safe-bottom));
     gap: 0;
-    border-radius: var(--sheet-radius);
+    border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
     overflow: hidden;
   }
