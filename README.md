@@ -41,7 +41,7 @@ DFS finds *a* path, not necessarily the shortest. BFS minimizes hop count. Dijks
 ## App features
 
 - Interactive map of Tehran Metro lines (including branches)
-- Station search and origin → destination routing (Dijkstra: distance + transfers)
+- Station search and origin → destination routing (Dijkstra: distance + transfers), with an approximate arrival time
 - Floating graph panel: \(|V|\), \(|E|\), and connectivity (DFS)
 
 ## Run
@@ -58,6 +58,10 @@ npm run dev
 ## Data
 
 Station/line data (`src/assets/data/`) is derived from [tehran-metro-data](https://github.com/mostafa-kheibary/tehran-metro-data) ([ODbL-1.0](https://github.com/mostafa-kheibary/tehran-metro-data/blob/main/LICENSE.md)). Adapted to this app’s line/serial schema; operating hours are approximate defaults.
+
+## Acknowledgments
+
+With respect and thanks to **[Omid Pilevar](https://github.com/pilevar)**, whose suggestion to show an approximate arrival time at the destination is implemented in this project.
 
 ## Affiliation
 
