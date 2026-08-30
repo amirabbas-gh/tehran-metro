@@ -30,6 +30,7 @@ import {
 } from "./lib/pwa";
 import { applyTheme, getPreferredTheme, persistTheme } from "./lib/theme";
 import { safeStorageGet } from "./lib/storage";
+import { TelemetryEvent, trackEvent, trackInstall } from "./lib/telemetry";
 import type {
   EnrichedLine,
   EnrichedStation,
@@ -112,10 +113,12 @@ export default function App(): ReactElement {
       if (isInstalledPwa()) return;
       setInstallPrompt(event);
       setInstallUi("banner");
+      trackEvent(TelemetryEvent.installPromptShown, "Install prompt shown");
     };
     const onInstalled = () => {
       setInstallPrompt(null);
       setInstallUi("banner");
+      trackInstall();
     };
     window.addEventListener("beforeinstallprompt", onPrompt);
     window.addEventListener("appinstalled", onInstalled);
@@ -194,7 +197,16 @@ export default function App(): ReactElement {
   async function runInstall() {
     if (!installPrompt) return;
     await installPrompt.prompt();
-    await installPrompt.userChoice;
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") {
+      trackEvent(TelemetryEvent.installPromptAccepted, "Install prompt accepted");
+      trackInstall();
+    } else {
+      trackEvent(
+        TelemetryEvent.installPromptDismissed,
+        "Install prompt dismissed"
+      );
+    }
     setInstallPrompt(null);
   }
 
@@ -269,7 +281,12 @@ export default function App(): ReactElement {
         onFocusLine={(lineId) =>
           setFocusedLine((current) => (current === lineId ? null : lineId))
         }
-        onRouteChange={setRouteStationIds}
+        onRouteChange={(stationIds) => {
+          setRouteStationIds(stationIds);
+          if (stationIds.length > 1) {
+            trackEvent(TelemetryEvent.route, "Route calculated");
+          }
+        }}
         goRequest={goRequest}
         onGoRequestHandled={() => setGoRequest(null)}
       />

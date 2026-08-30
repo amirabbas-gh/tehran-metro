@@ -1,4 +1,4 @@
-const CACHE = "metro-v2";
+const CACHE = "metro-v3";
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -23,6 +23,11 @@ self.addEventListener("message", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  const url = new URL(event.request.url);
+  // Never intercept analytics or other third-party requests (caching
+  // GoatCounter's /count pixel would silently drop later hits).
+  if (url.origin !== self.location.origin) return;
 
   // Always prefer the newest app shell. Cached content remains the offline fallback.
   if (event.request.mode === "navigate") {

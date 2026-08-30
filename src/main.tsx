@@ -2,6 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { isInstalledPwa } from "./lib/pwa";
+import { initTelemetry } from "./lib/telemetry";
+
+initTelemetry();
 
 const rootEl = document.getElementById("root");
 if (!rootEl) {
