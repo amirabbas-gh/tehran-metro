@@ -1,5 +1,11 @@
 # tehran-metro
 
+## 1.7.0
+
+### Minor Changes
+
+- f4f5e74: Add a GoatCounter telemetry module that records pageviews, unique PWA installs, and route searches.
+
 ## 1.6.0
 
 ### Minor Changes
